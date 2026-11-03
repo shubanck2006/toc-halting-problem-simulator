@@ -45,6 +45,10 @@ def load_all_predefined_machines():
 # Frontend Page Routes
 # -------------------------------------------------------------
 
+@app.route("/api/health")
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route("/")
 def index():
     return render_template("index.html")
