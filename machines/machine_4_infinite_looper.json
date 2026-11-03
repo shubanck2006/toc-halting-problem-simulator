@@ -1,0 +1,22 @@
+{
+  "name": "Infinite Looper (Non-terminating TM)",
+  "description": "Never halts. Demonstrates non-termination, infinite cycles, and how the simulator strictly enforces execution limits without claiming the machine definitely never halts.",
+  "states": ["q_loop_A", "q_loop_B"],
+  "input_alphabet": ["0", "1"],
+  "tape_alphabet": ["0", "1", "B"],
+  "initial_state": "q_loop_A",
+  "blank_symbol": "B",
+  "accept_states": [],
+  "reject_states": [],
+  "max_step_limit": 1000,
+  "default_input": "01",
+  "transitions": [
+    {"current_state": "q_loop_A", "read_symbol": "0", "next_state": "q_loop_B", "write_symbol": "1", "direction": "R"},
+    {"current_state": "q_loop_A", "read_symbol": "1", "next_state": "q_loop_B", "write_symbol": "0", "direction": "R"},
+    {"current_state": "q_loop_A", "read_symbol": "B", "next_state": "q_loop_B", "write_symbol": "1", "direction": "R"},
+
+    {"current_state": "q_loop_B", "read_symbol": "0", "next_state": "q_loop_A", "write_symbol": "1", "direction": "L"},
+    {"current_state": "q_loop_B", "read_symbol": "1", "next_state": "q_loop_A", "write_symbol": "0", "direction": "L"},
+    {"current_state": "q_loop_B", "read_symbol": "B", "next_state": "q_loop_A", "write_symbol": "1", "direction": "L"}
+  ]
+}

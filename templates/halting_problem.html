@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Module 5: The Halting Problem & Undecidability Proof - TOC Project{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+    <span class="badge badge-red">Module 5 - Core Highlight</span>
+    <span class="badge badge-purple">Diagonalization</span>
+    <span class="badge badge-amber">Proof by Contradiction</span>
+  </div>
+  <h1 class="page-title">The Halting Problem & Alan Turing's 1936 Proof</h1>
+  <p class="page-lead">
+    Step interactively through Alan Turing's legendary proof by contradiction demonstrating that
+    no general algorithm can ever predict whether an arbitrary program will halt or loop forever.
+  </p>
+</div>
+
+<!-- Interactive Proof Step Navigator -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-title">
+    <span>Interactive Proof Progression</span>
+    <div style="display: flex; gap: 0.5rem;">
+      <button id="btn-prev-step" class="btn btn-secondary" style="padding: 0.3rem 0.8rem;" disabled>&larr; Previous</button>
+      <button id="btn-next-step" class="btn btn-primary" style="padding: 0.3rem 0.8rem;">Next Step &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Step indicators -->
+  <div style="display: flex; justify-content: space-between; position: relative; margin: 1.5rem 0 2rem 0;">
+    <div style="position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: var(--border-color); transform: translateY(-50%); z-index: 1;"></div>
+    {% for step in proof_steps %}
+      <div class="step-bullet {% if loop.first %}active{% endif %}" data-step="{{ step.step_number }}" style="position: relative; z-index: 2; width: 36px; height: 36px; border-radius: 50%; background: {% if loop.first %}var(--accent-blue){% else %}var(--bg-secondary){% endif %}; border: 3px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+        {{ step.step_number }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Active Step Display Area -->
+  <div id="proof-step-card" style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+      <div>
+        <span id="step-number-label" class="badge badge-blue">Step 1 of 5</span>
+        <h2 id="step-title" style="font-size: 1.5rem; margin-top: 0.5rem; color: #fff;">Hypothesis: The Universal Halting Detector Exists</h2>
+        <div id="step-subtitle" style="color: #93c5fd; font-size: 0.95rem; margin-top: 0.25rem;">Assume there is an algorithm HALT(P, I)</div>
+      </div>
+    </div>
+
+    <!-- Math Formula Display -->
+    <div id="step-math-box" style="background: #020617; border: 1px solid #1e293b; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; text-align: center; font-size: 1.15rem; color: #a5f3fc;">
+      $$ \text{HALT}(P, I) = \begin{cases} \text{HALT} & \text{if } P(I) \text{ halts} \\ \text{LOOP} & \text{if } P(I) \text{ runs forever} \end{cases} $$
+    </div>
+
+    <div id="step-description" style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.7; white-space: pre-line;">
+      Suppose computer scientists discover a universal program `HALT(P, I)` that takes any program description P and any input I, and always returns HALT or LOOP in finite time without getting stuck.
+    </div>
+  </div>
+</div>
+
+<!-- Interactive Adversary & Paradox Simulator -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-title">
+    <span>The Self-Referential Engine: Testing OPPOSITE(&lang;OPPOSITE&rang;)</span>
+    <span class="badge badge-red">Interactive Paradox Simulator</span>
+  </div>
+  <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+    Choose what the hypothetical universal detector predicts for the adversary machine running on itself,
+    and observe how the adversary's logic intentionally triggers an undeniable contradiction:
+  </p>
+
+  <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+    <button id="btn-predict-halt" class="btn btn-primary" style="background: #2563eb;">
+      <span>Case A: Force Detector to Predict "HALT"</span>
+    </button>
+    <button id="btn-predict-loop" class="btn btn-secondary" style="background: #475569;">
+      <span>Case B: Force Detector to Predict "LOOP"</span>
+    </button>
+  </div>
+
+  <!-- Interactive Paradox Box Output -->
+  <div id="paradox-output-container" class="paradox-box" style="display: none;">
+    <div class="paradox-title">
+      <span>⚡ MATHEMATICAL CONTRADICTION DETECTED!</span>
+    </div>
+
+    <div class="grid-2" style="margin-top: 1rem;">
+      <div>
+        <h4 style="color: #fca5a5; margin-bottom: 0.5rem;">Adversary Code Trace:</h4>
+        <pre id="adversary-code-trace" style="background: #020617; border: 1px solid #7f1d1d; border-radius: var(--radius-sm); padding: 1rem; color: #a5f3fc; font-family: var(--font-mono); font-size: 0.82rem; overflow-x: auto; line-height: 1.5;"></pre>
+      </div>
+
+      <div>
+        <h4 style="color: #fca5a5; margin-bottom: 0.5rem;">Logical Breakdown:</h4>
+        <div id="adversary-detail-trace" style="background: #020617; border: 1px solid #7f1d1d; border-radius: var(--radius-sm); padding: 1rem; color: #fecaca; font-size: 0.88rem; line-height: 1.6; white-space: pre-line;"></div>
+        <div style="margin-top: 1rem; background: rgba(239, 68, 68, 0.2); border: 1px solid var(--accent-red); padding: 0.75rem; border-radius: var(--radius-sm); color: #fff; font-weight: 600; text-align: center;">
+          &there4; Neither prediction is sound &rArr; No such detector can exist!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Program Analyzer Explorer: Why Static Halting Analysis Fails -->
+<div class="card">
+  <div class="card-title">
+    <span>Static Analysis Limits & Open Conjectures</span>
+    <span class="badge badge-purple">Rice's Theorem Connection</span>
+  </div>
+  <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+    Why can't a compiler or AI inspect arbitrary code and prove whether it halts?
+    If a general halting algorithm existed, it could solve the hardest unsolved problems in mathematics
+    simply by checking if a search loop ever halts:
+  </p>
+
+  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+    <button class="btn btn-secondary btn-sample-prog active" data-id="simple_terminating">Simple Countdown</button>
+    <button class="btn btn-secondary btn-sample-prog" data-id="infinite_loop">Unconditional While-True</button>
+    <button class="btn btn-secondary btn-sample-prog" data-id="collatz">Collatz 3n + 1 Conjecture</button>
+    <button class="btn btn-secondary btn-sample-prog" data-id="goldbach">Goldbach Conjecture Verifier</button>
+  </div>
+
+  <div id="sample-program-box" style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+    <h3 id="sample-title" style="color: #93c5fd; font-size: 1.1rem; margin-bottom: 0.5rem;">Simple Counter (Guaranteed Halt)</h3>
+    <pre id="sample-code" style="background: #020617; padding: 0.75rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.85rem; color: #6ee7b7; margin-bottom: 0.75rem; overflow-x: auto;"></pre>
+    <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+      <span>True Behavior: <strong id="sample-outcome" style="color: #fff;">HALTS</strong></span>
+    </div>
+    <p id="sample-desc" style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;"></p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/halting.js"></script>
+{% endblock %}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}The Halting Problem & TOC Simulator{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Mermaid for State Transition Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <!-- MathJax for Mathematical Notation -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.mermaid) {
+        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <a href="/" class="brand-link">
+          <div class="brand-icon">⚙️</div>
+          <div>
+            <div class="brand-title">The Halting Problem</div>
+            <div class="brand-sub">Theory of Computation • Module 5 Interactive Simulator</div>
+          </div>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}">Overview</a>
+        <a href="/simulator" class="nav-item {% if request.path == '/simulator' %}active{% endif %}">TM Simulator</a>
+        <a href="/universal_tm" class="nav-item {% if request.path == '/universal_tm' %}active{% endif %}">Universal TM</a>
+        <a href="/language_classes" class="nav-item {% if request.path == '/language_classes' %}active{% endif %}">Recursive vs RE</a>
+        <a href="/halting_problem" class="nav-item highlight {% if request.path == '/halting_problem' %}active{% endif %}">Halting Proof</a>
+        <a href="/theory" class="nav-item {% if request.path == '/theory' %}active{% endif %}">Theory Explorer</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="app-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>The Halting Problem Simulator</h4>
+        <p>A rigorous educational implementation demonstrating Turing Machines, Universal Computation, and the Undecidability of the Halting Problem.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Core Modules</h4>
+        <ul>
+          <li><a href="/simulator">Module 1 & 2: TM Engine & Language Acceptance</a></li>
+          <li><a href="/universal_tm">Module 3: Universal Turing Machine (UTM)</a></li>
+          <li><a href="/language_classes">Module 4: Recursive vs RE Languages</a></li>
+          <li><a href="/halting_problem">Module 5: Halting Problem & Contradiction</a></li>
+          <li><a href="/theory">Module 6: Syllabus Theory Explorer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Theoretical Grounding</h4>
+        <p>Aligned with standard undergraduate Theory of Computation syllabus (Hopcroft, Motwani, Ullman / Sipser). Demonstrates Alan Turing's 1936 theorem.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; Theory of Computation Software Project • Aligned with Module 5: Turing Machine Theory & Undecidability
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "Language 0^n 1^n Recognizer",
+  "description": "Recognizes strings of the form 0^n 1^n for n >= 1 (e.g. 01, 0011, 000111). Matches each 0 with an X and each 1 with a Y.",
+  "states": ["q0", "q1", "q2", "q3", "q4", "q_accept", "q_reject"],
+  "input_alphabet": ["0", "1"],
+  "tape_alphabet": ["0", "1", "X", "Y", "B"],
+  "initial_state": "q0",
+  "blank_symbol": "B",
+  "accept_states": ["q_accept"],
+  "reject_states": ["q_reject"],
+  "max_step_limit": 1000,
+  "default_input": "0011",
+  "transitions": [
+    {"current_state": "q0", "read_symbol": "0", "next_state": "q1", "write_symbol": "X", "direction": "R"},
+    {"current_state": "q0", "read_symbol": "Y", "next_state": "q3", "write_symbol": "Y", "direction": "R"},
+
+    {"current_state": "q1", "read_symbol": "0", "next_state": "q1", "write_symbol": "0", "direction": "R"},
+    {"current_state": "q1", "read_symbol": "Y", "next_state": "q1", "write_symbol": "Y", "direction": "R"},
+    {"current_state": "q1", "read_symbol": "1", "next_state": "q2", "write_symbol": "Y", "direction": "L"},
+
+    {"current_state": "q2", "read_symbol": "0", "next_state": "q2", "write_symbol": "0", "direction": "L"},
+    {"current_state": "q2", "read_symbol": "Y", "next_state": "q2", "write_symbol": "Y", "direction": "L"},
+    {"current_state": "q2", "read_symbol": "X", "next_state": "q0", "write_symbol": "X", "direction": "R"},
+
+    {"current_state": "q3", "read_symbol": "Y", "next_state": "q3", "write_symbol": "Y", "direction": "R"},
+    {"current_state": "q3", "read_symbol": "B", "next_state": "q_accept", "write_symbol": "B", "direction": "S"}
+  ]
+}

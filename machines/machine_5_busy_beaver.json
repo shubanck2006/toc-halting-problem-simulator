@@ -1,0 +1,23 @@
+{
+  "name": "3-State Busy Beaver (BB-3)",
+  "description": "Starts on an entirely blank tape, executes exactly 14 steps, and halts leaving six '1's. Demonstrates extremal non-trivial computation before halting.",
+  "states": ["A", "B", "C", "HALT"],
+  "input_alphabet": ["0", "1"],
+  "tape_alphabet": ["0", "1", "B"],
+  "initial_state": "A",
+  "blank_symbol": "0",
+  "accept_states": ["HALT"],
+  "reject_states": [],
+  "max_step_limit": 100,
+  "default_input": "",
+  "transitions": [
+    {"current_state": "A", "read_symbol": "0", "next_state": "B", "write_symbol": "1", "direction": "R"},
+    {"current_state": "A", "read_symbol": "1", "next_state": "HALT", "write_symbol": "1", "direction": "R"},
+
+    {"current_state": "B", "read_symbol": "0", "next_state": "C", "write_symbol": "0", "direction": "R"},
+    {"current_state": "B", "read_symbol": "1", "next_state": "B", "write_symbol": "1", "direction": "R"},
+
+    {"current_state": "C", "read_symbol": "0", "next_state": "C", "write_symbol": "1", "direction": "L"},
+    {"current_state": "C", "read_symbol": "1", "next_state": "A", "write_symbol": "1", "direction": "L"}
+  ]
+}

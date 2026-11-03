@@ -1,0 +1,22 @@
+{
+  "name": "Binary Incrementer (Transducer)",
+  "description": "Computes w + 1 in binary (e.g. 1011 becomes 1100, 111 becomes 1000). Demonstrates a Turing Machine as a computational transducer.",
+  "states": ["q_scan_right", "q_carry", "q_accept"],
+  "input_alphabet": ["0", "1"],
+  "tape_alphabet": ["0", "1", "B"],
+  "initial_state": "q_scan_right",
+  "blank_symbol": "B",
+  "accept_states": ["q_accept"],
+  "reject_states": [],
+  "max_step_limit": 1000,
+  "default_input": "1011",
+  "transitions": [
+    {"current_state": "q_scan_right", "read_symbol": "0", "next_state": "q_scan_right", "write_symbol": "0", "direction": "R"},
+    {"current_state": "q_scan_right", "read_symbol": "1", "next_state": "q_scan_right", "write_symbol": "1", "direction": "R"},
+    {"current_state": "q_scan_right", "read_symbol": "B", "next_state": "q_carry", "write_symbol": "B", "direction": "L"},
+
+    {"current_state": "q_carry", "read_symbol": "1", "next_state": "q_carry", "write_symbol": "0", "direction": "L"},
+    {"current_state": "q_carry", "read_symbol": "0", "next_state": "q_accept", "write_symbol": "1", "direction": "S"},
+    {"current_state": "q_carry", "read_symbol": "B", "next_state": "q_accept", "write_symbol": "1", "direction": "S"}
+  ]
+}

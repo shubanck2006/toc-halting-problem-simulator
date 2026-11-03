@@ -1,0 +1,306 @@
+/**
+ * Module 3: Universal Turing Machine (UTM) Controller
+ */
+
+let utmStepsLog = [];
+let currentCycleIdx = 0;
+let isUTMPlaying = false;
+let utmPlayTimer = null;
+let utmCurrentMode = "preset"; // "preset" or "custom"
+
+document.addEventListener("DOMContentLoaded", function () {
+  initUTM();
+});
+
+function initUTM() {
+  const btnSimulate = document.getElementById("btn-utm-simulate");
+  const btnSimulateCustom = document.getElementById("btn-utm-simulate-custom");
+  const machineSelect = document.getElementById("utm-machine-select");
+  const btnModePreset = document.getElementById("btn-mode-preset");
+  const btnModeCustom = document.getElementById("btn-mode-custom-code");
+  const btnLoadSample = document.getElementById("btn-utm-load-sample-code");
+
+  // Mode toggles
+  if (btnModePreset && btnModeCustom) {
+    btnModePreset.addEventListener("click", () => switchUTMMode("preset"));
+    btnModeCustom.addEventListener("click", () => switchUTMMode("custom"));
+  }
+
+  if (btnLoadSample) {
+    btnLoadSample.addEventListener("click", function () {
+      // Sample TOC encoding for machine_1_anbn on input '01'
+      const samplePair = "10101101110110010111101111011110110011010110101100110111101101111011001101101110111101001110101110101001110111101110111101001110111010111011001111011110111101111011001111011111011111101111101110001011";
+      document.getElementById("utm-custom-encoded-input").value = samplePair;
+    });
+  }
+
+  if (btnSimulate) {
+    btnSimulate.addEventListener("click", () => runUTMSimulation("preset"));
+  }
+
+  if (btnSimulateCustom) {
+    btnSimulateCustom.addEventListener("click", () => runUTMSimulation("custom"));
+  }
+
+  if (machineSelect) {
+    machineSelect.addEventListener("change", function () {
+      document.getElementById("utm-encoded-string").innerText = "Click 'Run Universal Simulation' to generate encoding for " + this.options[this.selectedIndex].text;
+    });
+  }
+
+  // Navigation controls
+  const btnFirst = document.getElementById("btn-utm-first");
+  const btnPrev = document.getElementById("btn-utm-prev");
+  const btnPlay = document.getElementById("btn-utm-play");
+  const btnNext = document.getElementById("btn-utm-next");
+  const btnLast = document.getElementById("btn-utm-last");
+  const scrubber = document.getElementById("utm-scrubber");
+
+  if (btnFirst) btnFirst.addEventListener("click", () => goToUTMCycle(0));
+  if (btnPrev) btnPrev.addEventListener("click", () => goToUTMCycle(currentCycleIdx - 1));
+  if (btnNext) btnNext.addEventListener("click", () => goToUTMCycle(currentCycleIdx + 1));
+  if (btnLast) btnLast.addEventListener("click", () => goToUTMCycle(utmStepsLog.length - 1));
+  if (btnPlay) btnPlay.addEventListener("click", toggleUTMPlay);
+  if (scrubber) {
+    scrubber.addEventListener("input", function () {
+      goToUTMCycle(parseInt(this.value));
+    });
+  }
+}
+
+function switchUTMMode(mode) {
+  utmCurrentMode = mode;
+  const panelPreset = document.getElementById("utm-panel-preset");
+  const panelCustom = document.getElementById("utm-panel-custom-code");
+  const btnModePreset = document.getElementById("btn-mode-preset");
+  const btnModeCustom = document.getElementById("btn-mode-custom-code");
+
+  if (mode === "preset") {
+    panelPreset.style.display = "flex";
+    panelCustom.style.display = "none";
+    btnModePreset.className = "btn btn-primary";
+    btnModeCustom.className = "btn btn-secondary";
+  } else {
+    panelPreset.style.display = "none";
+    panelCustom.style.display = "block";
+    btnModePreset.className = "btn btn-secondary";
+    btnModeCustom.className = "btn btn-primary";
+  }
+}
+
+async function runUTMSimulation(mode = "preset") {
+  if (isUTMPlaying) toggleUTMPlay();
+
+  let payload = {};
+  let triggerBtn = null;
+
+  if (mode === "preset") {
+    triggerBtn = document.getElementById("btn-utm-simulate");
+    payload = {
+      machine_id: document.getElementById("utm-machine-select").value,
+      input_string: document.getElementById("utm-input-string").value || "",
+      max_steps: parseInt(document.getElementById("utm-max-steps").value) || 100
+    };
+  } else {
+    triggerBtn = document.getElementById("btn-utm-simulate-custom");
+    const encodedStr = document.getElementById("utm-custom-encoded-input").value.trim();
+    if (!encodedStr) {
+      alert("Please provide a binary encoded machine string <M>000<w>.");
+      return;
+    }
+    payload = {
+      encoded_string: encodedStr,
+      max_steps: 150
+    };
+  }
+
+  if (triggerBtn) {
+    triggerBtn.disabled = true;
+    triggerBtn.innerText = "Simulating on UTM...";
+  }
+
+  try {
+    const res = await fetch("/api/utm/simulate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (triggerBtn) {
+      triggerBtn.disabled = false;
+      triggerBtn.innerHTML = mode === "preset" ? "<span>⚙️ Run Universal Simulation</span>" : "Decode & Simulate UTM";
+    }
+
+    if (!data.success) {
+      alert("UTM simulation failed: " + data.error);
+      return;
+    }
+
+    renderUTMResults(data.result);
+  } catch (err) {
+    if (triggerBtn) {
+      triggerBtn.disabled = false;
+      triggerBtn.innerHTML = mode === "preset" ? "<span>⚙️ Run Universal Simulation</span>" : "Decode & Simulate UTM";
+    }
+    console.error("UTM simulation error:", err);
+  }
+}
+
+function renderUTMResults(res) {
+  // 1. Render Encoded Representation
+  const encBox = document.getElementById("utm-encoded-string");
+  encBox.innerHTML = `
+    <div style="margin-bottom: 0.5rem; color: #fff;"><strong>&lang;M, w&rang; = </strong></div>
+    <div style="color: #67e8f9;">${res.encoded_pair}</div>
+  `;
+
+  // 2. Render Code Legend
+  const legendDiv = document.getElementById("utm-legend-content");
+  if (res.legend) {
+    let statesHtml = "<div><strong style='color: #93c5fd;'>State Encodings:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    Object.entries(res.legend.states).forEach(([s, code]) => {
+      statesHtml += `<li><code>${s}</code> &rarr; <code>${code}</code></li>`;
+    });
+    statesHtml += "</ul></div>";
+
+    let symsHtml = "<div><strong style='color: #6ee7b7;'>Symbol Encodings:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    Object.entries(res.legend.symbols).forEach(([sym, code]) => {
+      symsHtml += `<li><code>${sym}</code> &rarr; <code>${code}</code></li>`;
+    });
+    symsHtml += "</ul></div>";
+
+    let dirsHtml = "<div><strong style='color: #fcd34d;'>Head Directions:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    Object.entries(res.legend.directions).forEach(([d, code]) => {
+      dirsHtml += `<li><code>${d}</code> &rarr; <code>${code}</code></li>`;
+    });
+    dirsHtml += "</ul></div>";
+
+    legendDiv.innerHTML = statesHtml + symsHtml + dirsHtml;
+  }
+
+  // 3. Status Badge & Steps
+  const statusBadge = document.getElementById("utm-status-badge");
+  statusBadge.className = `status-indicator status-${res.final_status}`;
+  statusBadge.innerText = res.final_status;
+  document.getElementById("utm-sim-steps").innerText = res.total_sim_steps;
+
+  // 4. Populate steps log array and configure scrubber
+  utmStepsLog = res.steps_log || [];
+  const scrubber = document.getElementById("utm-scrubber");
+  if (scrubber) {
+    scrubber.min = 0;
+    scrubber.max = Math.max(0, utmStepsLog.length - 1);
+    scrubber.value = 0;
+  }
+
+  // 5. Render Cycles Log list
+  const logBox = document.getElementById("utm-cycles-log");
+  logBox.innerHTML = "";
+  utmStepsLog.forEach((s, idx) => {
+    const entry = document.createElement("div");
+    entry.className = "log-entry";
+    entry.id = `utm-log-row-${idx}`;
+    entry.style.cursor = "pointer";
+    entry.title = "Click to inspect this cycle state";
+    entry.innerHTML = `
+      <span class="badge badge-purple" style="font-size: 0.72rem; min-width: 65px; text-align: center;">Cycle ${s.utm_cycle}</span>
+      <span class="badge badge-blue" style="font-size: 0.72rem; min-width: 60px; text-align: center;">${s.phase}</span>
+      <span style="color: #cbd5e1; flex: 1;">${s.action_description}</span>
+    `;
+    entry.addEventListener("click", () => goToUTMCycle(idx));
+    logBox.appendChild(entry);
+  });
+
+  // Jump to first cycle
+  goToUTMCycle(0);
+}
+
+function goToUTMCycle(idx) {
+  if (!utmStepsLog || !utmStepsLog.length) return;
+  if (idx < 0) idx = 0;
+  if (idx >= utmStepsLog.length) idx = utmStepsLog.length - 1;
+
+  currentCycleIdx = idx;
+  const step = utmStepsLog[idx];
+
+  // Update Track 3: State Register
+  document.getElementById("utm-track-3-state").innerText = step.sim_state;
+  document.getElementById("utm-sim-steps").innerText = step.sim_step;
+
+  // Update Track 2: Simulated Work Tape
+  renderUTMTrack2(step.sim_tape_window);
+
+  // Update Scrubber & indicator
+  const scrubber = document.getElementById("utm-scrubber");
+  if (scrubber) scrubber.value = idx;
+  document.getElementById("utm-step-indicator").innerText = `Cycle ${step.utm_cycle} / ${utmStepsLog[utmStepsLog.length - 1].utm_cycle} (Step ${step.sim_step})`;
+
+  // Highlight active row in log
+  document.querySelectorAll("#utm-cycles-log .log-entry").forEach(row => {
+    row.style.background = "transparent";
+  });
+  const activeRow = document.getElementById(`utm-log-row-${idx}`);
+  if (activeRow) {
+    activeRow.style.background = "rgba(59, 130, 246, 0.15)";
+    activeRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  // If reached end during autoplay, stop
+  if (idx === utmStepsLog.length - 1 && isUTMPlaying) {
+    toggleUTMPlay();
+  }
+}
+
+function toggleUTMPlay() {
+  const btn = document.getElementById("btn-utm-play");
+  if (isUTMPlaying) {
+    isUTMPlaying = false;
+    clearInterval(utmPlayTimer);
+    btn.innerHTML = "▶ Play";
+    btn.className = "btn btn-success";
+  } else {
+    if (!utmStepsLog || !utmStepsLog.length) return;
+    if (currentCycleIdx >= utmStepsLog.length - 1) {
+      currentCycleIdx = 0;
+    }
+    isUTMPlaying = true;
+    btn.innerHTML = "⏸ Pause";
+    btn.className = "btn btn-danger";
+    utmPlayTimer = setInterval(function () {
+      if (currentCycleIdx < utmStepsLog.length - 1) {
+        goToUTMCycle(currentCycleIdx + 1);
+      } else {
+        toggleUTMPlay();
+      }
+    }, 600);
+  }
+}
+
+function renderUTMTrack2(tapeWindow) {
+  const container = document.getElementById("utm-track-2-tape");
+  container.innerHTML = "";
+  if (!tapeWindow || !tapeWindow.length) return;
+
+  tapeWindow.forEach(cell => {
+    const wrap = document.createElement("div");
+    wrap.className = "tape-cell-wrap";
+
+    const pointer = document.createElement("div");
+    pointer.className = "tape-head-pointer" + (cell.is_head ? " visible" : "");
+    pointer.innerText = "▼";
+
+    const div = document.createElement("div");
+    div.className = "tape-cell" + (cell.is_head ? " active-head" : "");
+    div.innerText = cell.symbol;
+
+    const idx = document.createElement("div");
+    idx.className = "tape-cell-index";
+    idx.innerText = cell.index;
+
+    wrap.appendChild(pointer);
+    wrap.appendChild(div);
+    wrap.appendChild(idx);
+    container.appendChild(wrap);
+  });
+}

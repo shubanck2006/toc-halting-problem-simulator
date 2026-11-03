@@ -1,0 +1,38 @@
+{
+  "name": "Binary Palindrome Recognizer",
+  "description": "Recognizes palindromic binary strings (e.g. 101, 0110, 11011). Matches outer symbols inwards by erasing verified characters.",
+  "states": ["q0", "q_match0", "q_check0", "q_match1", "q_check1", "q_rewind", "q_accept", "q_reject"],
+  "input_alphabet": ["0", "1"],
+  "tape_alphabet": ["0", "1", "B"],
+  "initial_state": "q0",
+  "blank_symbol": "B",
+  "accept_states": ["q_accept"],
+  "reject_states": ["q_reject"],
+  "max_step_limit": 1000,
+  "default_input": "10101",
+  "transitions": [
+    {"current_state": "q0", "read_symbol": "0", "next_state": "q_match0", "write_symbol": "B", "direction": "R"},
+    {"current_state": "q0", "read_symbol": "1", "next_state": "q_match1", "write_symbol": "B", "direction": "R"},
+    {"current_state": "q0", "read_symbol": "B", "next_state": "q_accept", "write_symbol": "B", "direction": "S"},
+
+    {"current_state": "q_match0", "read_symbol": "0", "next_state": "q_match0", "write_symbol": "0", "direction": "R"},
+    {"current_state": "q_match0", "read_symbol": "1", "next_state": "q_match0", "write_symbol": "1", "direction": "R"},
+    {"current_state": "q_match0", "read_symbol": "B", "next_state": "q_check0", "write_symbol": "B", "direction": "L"},
+
+    {"current_state": "q_check0", "read_symbol": "0", "next_state": "q_rewind", "write_symbol": "B", "direction": "L"},
+    {"current_state": "q_check0", "read_symbol": "B", "next_state": "q_accept", "write_symbol": "B", "direction": "S"},
+    {"current_state": "q_check0", "read_symbol": "1", "next_state": "q_reject", "write_symbol": "1", "direction": "S"},
+
+    {"current_state": "q_match1", "read_symbol": "0", "next_state": "q_match1", "write_symbol": "0", "direction": "R"},
+    {"current_state": "q_match1", "read_symbol": "1", "next_state": "q_match1", "write_symbol": "1", "direction": "R"},
+    {"current_state": "q_match1", "read_symbol": "B", "next_state": "q_check1", "write_symbol": "B", "direction": "L"},
+
+    {"current_state": "q_check1", "read_symbol": "1", "next_state": "q_rewind", "write_symbol": "B", "direction": "L"},
+    {"current_state": "q_check1", "read_symbol": "B", "next_state": "q_accept", "write_symbol": "B", "direction": "S"},
+    {"current_state": "q_check1", "read_symbol": "0", "next_state": "q_reject", "write_symbol": "0", "direction": "S"},
+
+    {"current_state": "q_rewind", "read_symbol": "0", "next_state": "q_rewind", "write_symbol": "0", "direction": "L"},
+    {"current_state": "q_rewind", "read_symbol": "1", "next_state": "q_rewind", "write_symbol": "1", "direction": "L"},
+    {"current_state": "q_rewind", "read_symbol": "B", "next_state": "q0", "write_symbol": "B", "direction": "R"}
+  ]
+}
