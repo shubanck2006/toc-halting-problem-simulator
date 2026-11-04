@@ -3,76 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}The Halting Problem & TOC Simulator{% endblock %}</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <meta name="color-scheme" content="dark">
+  <title>{% block title %}The Halting Problem and TOC Simulator{% endblock %}</title>
+
+  <meta name="description" content="{% block meta_description %}An interactive Theory of Computation simulator for Turing machines, universal computation, and the undecidability of the halting problem.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}The Halting Problem Simulator{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Interactive Turing machine and undecidability simulator for the Theory of Computation.{% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/static/images/favicon.svg">
+
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Mermaid for State Transition Diagrams -->
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <!-- Mermaid v10 for state transition diagrams -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <!-- MathJax for Mathematical Notation -->
+  <!-- MathJax v3 for mathematical notation -->
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       if (window.mermaid) {
-        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          themeVariables: {
+            background: '#1F1F1F',
+            primaryColor: '#313131',
+            primaryTextColor: '#F5F5F5',
+            primaryBorderColor: '#313131',
+            secondaryColor: '#272727',
+            tertiaryColor: '#1F1F1F',
+            lineColor: '#9B9B9B',
+            textColor: '#F5F5F5',
+            fontSize: '14px',
+            fontFamily: "'Geist', -apple-system, BlinkMacSystemFont, sans-serif"
+          }
+        });
       }
     });
   </script>
 </head>
 <body>
-  <!-- Header & Navigation -->
+  <a href="#main-content" class="skip-link button-sm">Skip to content</a>
+
+  {% set nav_links = [
+    ('/', 'Overview'),
+    ('/simulator', 'Simulator'),
+    ('/universal_tm', 'Universal TM'),
+    ('/language_classes', 'Language classes'),
+    ('/halting_problem', 'Halting proof'),
+    ('/theory', 'Theory')
+  ] %}
+
   <header class="app-header">
-    <div class="header-container">
-      <div class="brand">
-        <a href="/" class="brand-link">
-          <div class="brand-icon">⚙️</div>
-          <div>
-            <div class="brand-title">The Halting Problem</div>
-            <div class="brand-sub">Theory of Computation • Module 5 Interactive Simulator</div>
-          </div>
-        </a>
-      </div>
-      <nav class="main-nav">
-        <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}">Overview</a>
-        <a href="/simulator" class="nav-item {% if request.path == '/simulator' %}active{% endif %}">TM Simulator</a>
-        <a href="/universal_tm" class="nav-item {% if request.path == '/universal_tm' %}active{% endif %}">Universal TM</a>
-        <a href="/language_classes" class="nav-item {% if request.path == '/language_classes' %}active{% endif %}">Recursive vs RE</a>
-        <a href="/halting_problem" class="nav-item highlight {% if request.path == '/halting_problem' %}active{% endif %}">Halting Proof</a>
-        <a href="/theory" class="nav-item {% if request.path == '/theory' %}active{% endif %}">Theory Explorer</a>
+    <div class="header-bar">
+      <a href="/" class="brand-link" aria-label="Halting Problem home">
+        <span class="brand-mark" aria-hidden="true"><i class="ph ph-cpu"></i></span>
+        <span class="brand-name title-4">Halting Problem</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        {% for href, label in nav_links %}
+        <a href="{{ href }}" class="nav-item caption-1{% if request.path == href %} active{% endif %}"{% if request.path == href %} aria-current="page"{% endif %}>{{ label }}</a>
+        {% endfor %}
+      </nav>
+
+      <button id="mobile-menu-btn" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="Toggle navigation">
+        <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <line class="menu-line menu-line-top" x1="3" y1="8" x2="21" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transform-origin: 12px 8px; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);"></line>
+          <line class="menu-line menu-line-bottom" x1="3" y1="16" x2="21" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transform-origin: 12px 16px; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobile-nav-drawer" class="mobile-nav-drawer" hidden>
+      <nav class="mobile-nav" aria-label="Mobile navigation">
+        {% for href, label in nav_links %}
+        <a href="{{ href }}" class="mobile-nav-link nav-item title-3{% if request.path == href %} active{% endif %}" style="transition-delay: {{ loop.index0 * 60 }}ms;"{% if request.path == href %} aria-current="page"{% endif %}>{{ label }}</a>
+        {% endfor %}
       </nav>
     </div>
   </header>
 
-  <!-- Main Content Container -->
-  <main class="app-main">
+  <main id="main-content" class="app-main">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer -->
   <footer class="app-footer">
-    <div class="footer-container">
-      <div class="footer-col">
-        <h4>The Halting Problem Simulator</h4>
-        <p>A rigorous educational implementation demonstrating Turing Machines, Universal Computation, and the Undecidability of the Halting Problem.</p>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="footer-brand-link title-4">
+          <i class="ph ph-cpu" aria-hidden="true"></i>
+          <span>Halting Problem</span>
+        </a>
+        <p class="footer-tagline body-6">
+          A teaching simulator for Turing machines, universal computation, and undecidability.
+          The source code is open and released under the MIT License.
+        </p>
       </div>
-      <div class="footer-col">
-        <h4>Core Modules</h4>
-        <ul>
-          <li><a href="/simulator">Module 1 & 2: TM Engine & Language Acceptance</a></li>
-          <li><a href="/universal_tm">Module 3: Universal Turing Machine (UTM)</a></li>
-          <li><a href="/language_classes">Module 4: Recursive vs RE Languages</a></li>
-          <li><a href="/halting_problem">Module 5: Halting Problem & Contradiction</a></li>
-          <li><a href="/theory">Module 6: Syllabus Theory Explorer</a></li>
-        </ul>
+
+      <nav class="footer-links" aria-label="Footer modules">
+        <a href="/simulator" class="caption-2">Simulator</a>
+        <a href="/universal_tm" class="caption-2">Universal TM</a>
+        <a href="/language_classes" class="caption-2">Language classes</a>
+        <a href="/halting_problem" class="caption-2">Halting proof</a>
+        <a href="/theory" class="caption-2">Theory</a>
+      </nav>
+
+      <div class="footer-legal">
+        <a href="/privacy" class="caption-2">Privacy</a>
+        <a href="/terms" class="caption-2">Terms</a>
+        <a href="https://github.com/shubanck2006/toc-halting-problem-simulator" class="caption-2" target="_blank" rel="noopener noreferrer">GitHub repository</a>
       </div>
-      <div class="footer-col">
-        <h4>Theoretical Grounding</h4>
-        <p>Aligned with standard undergraduate Theory of Computation syllabus (Hopcroft, Motwani, Ullman / Sipser). Demonstrates Alan Turing's 1936 theorem.</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      &copy; Theory of Computation Software Project • Aligned with Module 5: Turing Machine Theory & Undecidability
+
+      <p class="footer-copy caption-5">
+        &copy; 2026 Theory of Computation project. Built for Module 5 on Turing machines and undecidability.
+      </p>
     </div>
   </footer>
 

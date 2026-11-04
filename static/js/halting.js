@@ -1,5 +1,6 @@
 /**
- * Module 5: Halting Problem & Undecidability Proof Controller
+ * Module 5: Halting Problem and Undecidability Proof Controller
+ * Compliant with ElayaDesign ai-design-skills and DESIGN.md
  */
 
 let proofSteps = [];
@@ -10,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function initHaltingProof() {
-  // Fetch proof steps
+  // Fetch structured proof sequence
   try {
     const res = await fetch("/api/halting_proof/steps");
     const data = await res.json();
@@ -19,6 +20,9 @@ async function initHaltingProof() {
     }
   } catch (err) {
     console.error("Failed to fetch proof steps:", err);
+    if (window.showInlineNotice) {
+      window.showInlineNotice("Unable to load proof steps. Check that the local Flask server is running and try again.", "error");
+    }
   }
 
   const btnPrev = document.getElementById("btn-prev-step");
@@ -43,12 +47,14 @@ async function initHaltingProof() {
 
   bullets.forEach(b => {
     b.addEventListener("click", function () {
-      const stepNum = parseInt(this.getAttribute("data-step"));
-      goToStep(stepNum - 1);
+      const stepNum = parseInt(this.getAttribute("data-step"), 10);
+      if (!isNaN(stepNum)) {
+        goToStep(stepNum - 1);
+      }
     });
   });
 
-  // Paradox buttons
+  // Adversary paradox buttons
   const btnPredictHalt = document.getElementById("btn-predict-halt");
   const btnPredictLoop = document.getElementById("btn-predict-loop");
 
@@ -78,30 +84,59 @@ function goToStep(idx) {
   currentStepIdx = idx;
   const s = proofSteps[idx];
 
-  document.getElementById("step-number-label").innerText = `Step ${s.step_number} of ${proofSteps.length}`;
-  document.getElementById("step-title").innerText = s.title;
-  document.getElementById("step-subtitle").innerText = s.subtitle;
-  document.getElementById("step-math-box").innerHTML = `$$ ${s.math} $$`;
-  document.getElementById("step-description").innerText = s.description;
+  const numLabel = document.getElementById("step-number-label");
+  if (numLabel) {
+    numLabel.innerText = `Step ${s.step_number} of ${proofSteps.length}`;
+  }
 
-  // Update button states
-  document.getElementById("btn-prev-step").disabled = (idx === 0);
-  document.getElementById("btn-next-step").disabled = (idx === proofSteps.length - 1);
+  const titleEl = document.getElementById("step-title");
+  if (titleEl) {
+    titleEl.innerText = s.title;
+  }
 
-  // Update bullets
+  const subEl = document.getElementById("step-subtitle");
+  if (subEl) {
+    subEl.innerText = s.subtitle;
+  }
+
+  const mathBox = document.getElementById("step-math-box");
+  if (mathBox) {
+    mathBox.innerHTML = `$$ ${s.math} $$`;
+  }
+
+  const descEl = document.getElementById("step-description");
+  if (descEl) {
+    descEl.innerText = s.description;
+  }
+
+  // Update button navigation states
+  const btnPrev = document.getElementById("btn-prev-step");
+  if (btnPrev) {
+    btnPrev.disabled = (idx === 0);
+  }
+
+  const btnNext = document.getElementById("btn-next-step");
+  if (btnNext) {
+    btnNext.disabled = (idx === proofSteps.length - 1);
+  }
+
+  // Update step bullets using clean design tokens
   document.querySelectorAll(".step-bullet").forEach((b, i) => {
+    b.classList.remove("active", "completed");
     if (i === idx) {
-      b.style.background = "var(--accent-blue)";
-      b.style.borderColor = "#93c5fd";
-      b.style.color = "#fff";
+      b.classList.add("active");
+      b.style.background = "var(--action-primary, #4A85C5)";
+      b.style.borderColor = "var(--border-action-primary, #6BA0D8)";
+      b.style.color = "var(--text-primary, #FFFFFF)";
     } else if (i < idx) {
-      b.style.background = "#1e3a8a";
-      b.style.borderColor = "#3b82f6";
-      b.style.color = "#93c5fd";
+      b.classList.add("completed");
+      b.style.background = "var(--surface-secondary, #272727)";
+      b.style.borderColor = "var(--action-primary, #4A85C5)";
+      b.style.color = "var(--text-info, #82B1E1)";
     } else {
-      b.style.background = "var(--bg-secondary)";
-      b.style.borderColor = "var(--border-color)";
-      b.style.color = "var(--text-muted)";
+      b.style.background = "var(--surface-primary-subtle, #1F1F1F)";
+      b.style.borderColor = "var(--border-primary, #313131)";
+      b.style.color = "var(--text-secondary, #9B9B9B)";
     }
   });
 
@@ -111,7 +146,13 @@ function goToStep(idx) {
 }
 
 async function simulateAdversary(pred) {
+  const btnPredictHalt = document.getElementById("btn-predict-halt");
+  const btnPredictLoop = document.getElementById("btn-predict-loop");
+
   try {
+    if (btnPredictHalt) btnPredictHalt.disabled = true;
+    if (btnPredictLoop) btnPredictLoop.disabled = true;
+
     const res = await fetch("/api/halting_proof/simulate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -120,19 +161,39 @@ async function simulateAdversary(pred) {
 
     const data = await res.json();
     if (!data.success) {
-      alert("Error simulating paradox: " + data.error);
+      if (window.showInlineNotice) {
+        window.showInlineNotice("Simulation request failed. Check that the local Flask server is running and try again.", "error");
+      }
       return;
     }
 
     const r = data.result;
     const container = document.getElementById("paradox-output-container");
-    container.style.display = "block";
-    document.getElementById("adversary-code-trace").innerText = r.code_snippet;
-    document.getElementById("adversary-detail-trace").innerText = r.detail;
+    if (container) {
+      container.style.display = "block";
+    }
 
-    container.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const codeTrace = document.getElementById("adversary-code-trace");
+    if (codeTrace) {
+      codeTrace.innerText = r.code_snippet;
+    }
+
+    const detailTrace = document.getElementById("adversary-detail-trace");
+    if (detailTrace) {
+      detailTrace.innerText = r.detail;
+    }
+
+    if (container) {
+      container.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   } catch (err) {
     console.error("Paradox simulation error:", err);
+    if (window.showInlineNotice) {
+      window.showInlineNotice("Simulation request failed. Check that the local Flask server is running and try again.", "error");
+    }
+  } finally {
+    if (btnPredictHalt) btnPredictHalt.disabled = false;
+    if (btnPredictLoop) btnPredictLoop.disabled = false;
   }
 }
 
@@ -142,12 +203,22 @@ async function loadSampleProgram(progId) {
     const data = await res.json();
     if (data.success && data.sample) {
       const s = data.sample;
-      document.getElementById("sample-title").innerText = s.name;
-      document.getElementById("sample-code").innerText = s.code;
-      document.getElementById("sample-outcome").innerText = s.actual_outcome;
-      document.getElementById("sample-desc").innerText = s.explanation;
+      const titleEl = document.getElementById("sample-title");
+      if (titleEl) titleEl.innerText = s.name;
+
+      const codeEl = document.getElementById("sample-code");
+      if (codeEl) codeEl.innerText = s.code;
+
+      const outcomeEl = document.getElementById("sample-outcome");
+      if (outcomeEl) outcomeEl.innerText = s.actual_outcome;
+
+      const descEl = document.getElementById("sample-desc");
+      if (descEl) descEl.innerText = s.explanation;
     }
   } catch (err) {
     console.error("Sample program error:", err);
+    if (window.showInlineNotice) {
+      window.showInlineNotice("Failed to load sample program. Check that the local Flask server is running and try again.", "error");
+    }
   }
 }

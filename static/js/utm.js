@@ -12,6 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
   initUTM();
 });
 
+function showUTMNotice(msg, type = "error") {
+  if (typeof window.showInlineNotice === "function") {
+    window.showInlineNotice(msg, type, "page-notice");
+    return;
+  }
+  const noticeEl = document.getElementById("page-notice");
+  if (noticeEl) {
+    noticeEl.textContent = msg;
+    noticeEl.className = `inline-notice inline-notice-${type}`;
+    noticeEl.hidden = false;
+    noticeEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  } else {
+    console.warn(`[${type}] ${msg}`);
+  }
+}
+
 function initUTM() {
   const btnSimulate = document.getElementById("btn-utm-simulate");
   const btnSimulateCustom = document.getElementById("btn-utm-simulate-custom");
@@ -44,7 +60,7 @@ function initUTM() {
 
   if (machineSelect) {
     machineSelect.addEventListener("change", function () {
-      document.getElementById("utm-encoded-string").innerText = "Click 'Run Universal Simulation' to generate encoding for " + this.options[this.selectedIndex].text;
+      document.getElementById("utm-encoded-string").innerText = "Click 'Run universal simulation' to generate encoding for " + this.options[this.selectedIndex].text;
     });
   }
 
@@ -78,13 +94,13 @@ function switchUTMMode(mode) {
   if (mode === "preset") {
     panelPreset.style.display = "flex";
     panelCustom.style.display = "none";
-    btnModePreset.className = "btn btn-primary";
-    btnModeCustom.className = "btn btn-secondary";
+    btnModePreset.className = "btn btn-primary button-sm";
+    btnModeCustom.className = "btn btn-secondary button-sm";
   } else {
     panelPreset.style.display = "none";
     panelCustom.style.display = "block";
-    btnModePreset.className = "btn btn-secondary";
-    btnModeCustom.className = "btn btn-primary";
+    btnModePreset.className = "btn btn-secondary button-sm";
+    btnModeCustom.className = "btn btn-primary button-sm";
   }
 }
 
@@ -105,7 +121,7 @@ async function runUTMSimulation(mode = "preset") {
     triggerBtn = document.getElementById("btn-utm-simulate-custom");
     const encodedStr = document.getElementById("utm-custom-encoded-input").value.trim();
     if (!encodedStr) {
-      alert("Please provide a binary encoded machine string <M>000<w>.");
+      showUTMNotice("Please provide a valid binary encoded machine string <M>000<w>.", "error");
       return;
     }
     payload = {
@@ -116,7 +132,7 @@ async function runUTMSimulation(mode = "preset") {
 
   if (triggerBtn) {
     triggerBtn.disabled = true;
-    triggerBtn.innerText = "Simulating on UTM...";
+    triggerBtn.innerHTML = '<span>Simulating on UTM...</span>';
   }
 
   try {
@@ -129,11 +145,13 @@ async function runUTMSimulation(mode = "preset") {
     const data = await res.json();
     if (triggerBtn) {
       triggerBtn.disabled = false;
-      triggerBtn.innerHTML = mode === "preset" ? "<span>⚙️ Run Universal Simulation</span>" : "Decode & Simulate UTM";
+      triggerBtn.innerHTML = mode === "preset"
+        ? '<i class="ph ph-play" aria-hidden="true"></i><span>Run universal simulation</span>'
+        : '<i class="ph ph-play" aria-hidden="true"></i><span>Decode and simulate UTM</span>';
     }
 
     if (!data.success) {
-      alert("UTM simulation failed: " + data.error);
+      showUTMNotice("Universal simulation failed: " + (data.error || "unknown server error"), "error");
       return;
     }
 
@@ -141,9 +159,12 @@ async function runUTMSimulation(mode = "preset") {
   } catch (err) {
     if (triggerBtn) {
       triggerBtn.disabled = false;
-      triggerBtn.innerHTML = mode === "preset" ? "<span>⚙️ Run Universal Simulation</span>" : "Decode & Simulate UTM";
+      triggerBtn.innerHTML = mode === "preset"
+        ? '<i class="ph ph-play" aria-hidden="true"></i><span>Run universal simulation</span>'
+        : '<i class="ph ph-play" aria-hidden="true"></i><span>Decode and simulate UTM</span>';
     }
     console.error("UTM simulation error:", err);
+    showUTMNotice("Network communication error during universal simulation.", "error");
   }
 }
 
@@ -151,37 +172,37 @@ function renderUTMResults(res) {
   // 1. Render Encoded Representation
   const encBox = document.getElementById("utm-encoded-string");
   encBox.innerHTML = `
-    <div style="margin-bottom: 0.5rem; color: #fff;"><strong>&lang;M, w&rang; = </strong></div>
-    <div style="color: #67e8f9;">${res.encoded_pair}</div>
+    <div style="margin-bottom: var(--sp-50); color: var(--text-primary);"><strong class="font-mono">&lang;M, w&rang; = </strong></div>
+    <div style="color: var(--text-info);">${res.encoded_pair}</div>
   `;
 
   // 2. Render Code Legend
   const legendDiv = document.getElementById("utm-legend-content");
   if (res.legend) {
-    let statesHtml = "<div><strong style='color: #93c5fd;'>State Encodings:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    let statesHtml = "<div><strong style='color: var(--text-info);'>State encodings</strong><ul style='list-style: none; margin-top: var(--sp-50); padding: 0;'>";
     Object.entries(res.legend.states).forEach(([s, code]) => {
-      statesHtml += `<li><code>${s}</code> &rarr; <code>${code}</code></li>`;
+      statesHtml += `<li style="margin-bottom: var(--sp-25);"><code>${s}</code> &rarr; <code>${code}</code></li>`;
     });
     statesHtml += "</ul></div>";
 
-    let symsHtml = "<div><strong style='color: #6ee7b7;'>Symbol Encodings:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    let symsHtml = "<div><strong style='color: var(--text-secondary);'>Symbol encodings</strong><ul style='list-style: none; margin-top: var(--sp-50); padding: 0;'>";
     Object.entries(res.legend.symbols).forEach(([sym, code]) => {
-      symsHtml += `<li><code>${sym}</code> &rarr; <code>${code}</code></li>`;
+      symsHtml += `<li style="margin-bottom: var(--sp-25);"><code>${sym}</code> &rarr; <code>${code}</code></li>`;
     });
     symsHtml += "</ul></div>";
 
-    let dirsHtml = "<div><strong style='color: #fcd34d;'>Head Directions:</strong><ul style='list-style: none; margin-top: 0.25rem;'>";
+    let dirsHtml = "<div><strong style='color: var(--text-primary);'>Head directions</strong><ul style='list-style: none; margin-top: var(--sp-50); padding: 0;'>";
     Object.entries(res.legend.directions).forEach(([d, code]) => {
-      dirsHtml += `<li><code>${d}</code> &rarr; <code>${code}</code></li>`;
+      dirsHtml += `<li style="margin-bottom: var(--sp-25);"><code>${d}</code> &rarr; <code>${code}</code></li>`;
     });
     dirsHtml += "</ul></div>";
 
     legendDiv.innerHTML = statesHtml + symsHtml + dirsHtml;
   }
 
-  // 3. Status Badge & Steps
+  // 3. Status Badge and Steps
   const statusBadge = document.getElementById("utm-status-badge");
-  statusBadge.className = `status-indicator status-${res.final_status}`;
+  statusBadge.className = `status-indicator status-${res.final_status} caption-3`;
   statusBadge.innerText = res.final_status;
   document.getElementById("utm-sim-steps").innerText = res.total_sim_steps;
 
@@ -204,9 +225,9 @@ function renderUTMResults(res) {
     entry.style.cursor = "pointer";
     entry.title = "Click to inspect this cycle state";
     entry.innerHTML = `
-      <span class="badge badge-purple" style="font-size: 0.72rem; min-width: 65px; text-align: center;">Cycle ${s.utm_cycle}</span>
-      <span class="badge badge-blue" style="font-size: 0.72rem; min-width: 60px; text-align: center;">${s.phase}</span>
-      <span style="color: #cbd5e1; flex: 1;">${s.action_description}</span>
+      <span class="badge badge-purple caption-3 font-mono" style="min-width: 65px; text-align: center;">Cycle ${s.utm_cycle}</span>
+      <span class="badge badge-blue caption-3 font-mono" style="min-width: 60px; text-align: center;">${s.phase}</span>
+      <span style="color: var(--text-primary); flex: 1;">${s.action_description}</span>
     `;
     entry.addEventListener("click", () => goToUTMCycle(idx));
     logBox.appendChild(entry);
@@ -231,7 +252,7 @@ function goToUTMCycle(idx) {
   // Update Track 2: Simulated Work Tape
   renderUTMTrack2(step.sim_tape_window);
 
-  // Update Scrubber & indicator
+  // Update Scrubber and indicator
   const scrubber = document.getElementById("utm-scrubber");
   if (scrubber) scrubber.value = idx;
   document.getElementById("utm-step-indicator").innerText = `Cycle ${step.utm_cycle} / ${utmStepsLog[utmStepsLog.length - 1].utm_cycle} (Step ${step.sim_step})`;
@@ -242,7 +263,7 @@ function goToUTMCycle(idx) {
   });
   const activeRow = document.getElementById(`utm-log-row-${idx}`);
   if (activeRow) {
-    activeRow.style.background = "rgba(59, 130, 246, 0.15)";
+    activeRow.style.background = "var(--surface-secondary-subtle)";
     activeRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
@@ -257,16 +278,16 @@ function toggleUTMPlay() {
   if (isUTMPlaying) {
     isUTMPlaying = false;
     clearInterval(utmPlayTimer);
-    btn.innerHTML = "▶ Play";
-    btn.className = "btn btn-success";
+    btn.innerHTML = '<i class="ph ph-play" aria-hidden="true"></i><span>Play</span>';
+    btn.className = "btn btn-success button-sm";
   } else {
     if (!utmStepsLog || !utmStepsLog.length) return;
     if (currentCycleIdx >= utmStepsLog.length - 1) {
       currentCycleIdx = 0;
     }
     isUTMPlaying = true;
-    btn.innerHTML = "⏸ Pause";
-    btn.className = "btn btn-danger";
+    btn.innerHTML = '<i class="ph ph-pause" aria-hidden="true"></i><span>Pause</span>';
+    btn.className = "btn btn-danger button-sm";
     utmPlayTimer = setInterval(function () {
       if (currentCycleIdx < utmStepsLog.length - 1) {
         goToUTMCycle(currentCycleIdx + 1);
@@ -288,14 +309,14 @@ function renderUTMTrack2(tapeWindow) {
 
     const pointer = document.createElement("div");
     pointer.className = "tape-head-pointer" + (cell.is_head ? " visible" : "");
-    pointer.innerText = "▼";
+    pointer.innerHTML = '<i class="ph ph-caret-down" aria-hidden="true"></i>';
 
     const div = document.createElement("div");
     div.className = "tape-cell" + (cell.is_head ? " active-head" : "");
     div.innerText = cell.symbol;
 
     const idx = document.createElement("div");
-    idx.className = "tape-cell-index";
+    idx.className = "tape-cell-index font-mono";
     idx.innerText = cell.index;
 
     wrap.appendChild(pointer);

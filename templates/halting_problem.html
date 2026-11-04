@@ -1,133 +1,503 @@
 {% extends "base.html" %}
 
-{% block title %}Module 5: The Halting Problem & Undecidability Proof - TOC Project{% endblock %}
+{% block title %}Module 5: The Halting Problem and Undecidability Proof - TOC Project{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-    <span class="badge badge-red">Module 5 - Core Highlight</span>
-    <span class="badge badge-purple">Diagonalization</span>
-    <span class="badge badge-amber">Proof by Contradiction</span>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+<style>
+/* Scoped styles for halting_problem.html strictly following DESIGN.md */
+:root {
+  --surface-canvas: #000000;
+  --surface-primary: #181818;
+  --surface-primary-subtle: #1F1F1F;
+  --surface-secondary: #272727;
+  --surface-secondary-subtle: #313131;
+  --border-primary: #313131;
+  --action-primary: #4A85C5;
+  --action-primary-hover: #3B71AD;
+  --action-primary-click: #2E5B8F;
+  --text-info: #82B1E1;
+  --border-action-primary: #6BA0D8;
+  --surface-success-subtle: #1F1F1F;
+  --border-success: #4E9F78;
+  --text-success: #6BC097;
+  --surface-error-subtle: #1F1F1F;
+  --border-error: #C95B5B;
+  --text-error: #E08282;
+  --surface-warning-subtle: #1F1F1F;
+  --border-warning: #C79A4B;
+  --text-warning: #DFB56B;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9B9B9B;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --r-6: 6px;
+  --r-8: 8px;
+  --r-12: 12px;
+  --r-16: 16px;
+  --r-24: 24px;
+  --r-full: 9999px;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.heading-2 {
+  font-family: var(--font-sans);
+  font-size: 48px;
+  line-height: 48px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: var(--text-primary);
+}
+
+.heading-4 {
+  font-family: var(--font-sans);
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--text-primary);
+}
+
+.title-1 {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.title-2 {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.title-3 {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.title-4 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.body-3 {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-wrap: pretty;
+  color: var(--text-secondary);
+}
+
+.body-5 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-wrap: pretty;
+  color: var(--text-secondary);
+}
+
+.button-md {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.button-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.caption-1 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.caption-2 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.caption-3 {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-info {
+  color: var(--text-info) !important;
+}
+
+.text-success {
+  color: var(--text-success) !important;
+}
+
+.text-error {
+  color: var(--text-error) !important;
+}
+
+.text-warning {
+  color: var(--text-warning) !important;
+}
+
+.card {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--r-24);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.well {
+  background: var(--surface-primary-subtle);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--r-8);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--r-6);
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--r-8);
+  border: 1px solid var(--border-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 300ms var(--ease-out-expo);
+  box-sizing: border-box;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--border-action-primary);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--action-primary);
+  border-color: var(--action-primary);
+  color: var(--text-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
+  color: var(--text-primary);
+}
+
+.btn-secondary {
+  background: var(--surface-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-secondary-subtle);
+  border-color: var(--surface-secondary-subtle);
+  color: var(--text-primary);
+}
+
+.btn-sample-prog.active {
+  background: var(--surface-secondary-subtle);
+  border-color: var(--border-action-primary);
+  color: var(--text-info);
+}
+
+.inline-notice {
+  padding: 12px 16px;
+  border-radius: var(--r-8);
+  border: 1px solid var(--border-primary);
+  background: var(--surface-primary-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.inline-notice-error {
+  border-color: var(--border-error);
+  color: var(--text-error);
+}
+
+.inline-notice-success {
+  border-color: var(--border-success);
+  color: var(--text-success);
+}
+
+.inline-notice-info {
+  border-color: var(--border-action-primary);
+  color: var(--text-info);
+}
+
+/* Step bullets */
+.step-bullet {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--surface-primary-subtle);
+  border: 2px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 300ms var(--ease-out-expo);
+  color: var(--text-secondary);
+}
+
+.step-bullet:hover {
+  border-color: var(--border-action-primary);
+  color: var(--text-primary);
+}
+
+.step-bullet.active {
+  background: var(--action-primary);
+  border-color: var(--border-action-primary);
+  color: var(--text-primary);
+}
+
+.step-bullet.completed {
+  background: var(--surface-secondary);
+  border-color: var(--action-primary);
+  color: var(--text-info);
+}
+
+/* Paradox box */
+.paradox-box {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-error);
+  border-radius: var(--r-16);
+  padding: 24px;
+  margin: 24px 0 0 0;
+  box-sizing: border-box;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .heading-2 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+}
+</style>
+
+<!-- Header & Lead -->
+<div class="page-header" style="padding: 24px 0 16px 0;">
+  <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+    <span class="badge caption-3">Module 5 core highlight</span>
+    <span class="badge caption-3">Diagonalization</span>
+    <span class="badge caption-3">Proof by contradiction</span>
   </div>
-  <h1 class="page-title">The Halting Problem & Alan Turing's 1936 Proof</h1>
-  <p class="page-lead">
+  <h1 class="heading-2">The Halting Problem and Alan Turing's 1936 proof</h1>
+  <p class="body-3 text-secondary" style="max-width: 680px; margin-top: 8px;">
     Step interactively through Alan Turing's legendary proof by contradiction demonstrating that
     no general algorithm can ever predict whether an arbitrary program will halt or loop forever.
   </p>
 </div>
 
-<!-- Interactive Proof Step Navigator -->
-<div class="card" style="margin-bottom: 2rem;">
-  <div class="card-title">
-    <span>Interactive Proof Progression</span>
-    <div style="display: flex; gap: 0.5rem;">
-      <button id="btn-prev-step" class="btn btn-secondary" style="padding: 0.3rem 0.8rem;" disabled>&larr; Previous</button>
-      <button id="btn-next-step" class="btn btn-primary" style="padding: 0.3rem 0.8rem;">Next Step &rarr;</button>
+<!-- Inline Calm Status Banner -->
+<div id="page-notice" class="inline-notice" role="status" aria-live="polite" hidden></div>
+
+<!-- Interactive Proof Step Navigator Section -->
+<section class="card" style="margin-bottom: 32px;" aria-label="Interactive proof progression">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <i class="ph ph-steps" aria-hidden="true" style="font-size: 20px; color: var(--action-primary);"></i>
+      <h2 class="title-1">Interactive proof progression</h2>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button id="btn-prev-step" class="btn btn-secondary button-sm" type="button" disabled>
+        <i class="ph ph-arrow-left" aria-hidden="true"></i>
+        <span>Previous</span>
+      </button>
+      <button id="btn-next-step" class="btn btn-primary button-sm" type="button">
+        <span>Next step</span>
+        <i class="ph ph-arrow-right" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
 
   <!-- Step indicators -->
-  <div style="display: flex; justify-content: space-between; position: relative; margin: 1.5rem 0 2rem 0;">
-    <div style="position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: var(--border-color); transform: translateY(-50%); z-index: 1;"></div>
-    {% for step in proof_steps %}
-      <div class="step-bullet {% if loop.first %}active{% endif %}" data-step="{{ step.step_number }}" style="position: relative; z-index: 2; width: 36px; height: 36px; border-radius: 50%; background: {% if loop.first %}var(--accent-blue){% else %}var(--bg-secondary){% endif %}; border: 3px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: all 0.2s;">
-        {{ step.step_number }}
-      </div>
-    {% endfor %}
+  <div style="position: relative; margin: 24px 0 32px 0;">
+    <div aria-hidden="true" style="position: absolute; top: 50%; left: 16px; right: 16px; height: 2px; background: var(--border-primary); transform: translateY(-50%); z-index: 1;"></div>
+    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+      {% for step in proof_steps %}
+        <button class="step-bullet {% if loop.first %}active{% endif %}" data-step="{{ step.step_number }}" type="button" aria-label="Step {{ step.step_number }}">
+          <span class="font-mono caption-3">{{ step.step_number }}</span>
+        </button>
+      {% endfor %}
+    </div>
   </div>
 
   <!-- Active Step Display Area -->
-  <div id="proof-step-card" style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-      <div>
-        <span id="step-number-label" class="badge badge-blue">Step 1 of 5</span>
-        <h2 id="step-title" style="font-size: 1.5rem; margin-top: 0.5rem; color: #fff;">Hypothesis: The Universal Halting Detector Exists</h2>
-        <div id="step-subtitle" style="color: #93c5fd; font-size: 0.95rem; margin-top: 0.25rem;">Assume there is an algorithm HALT(P, I)</div>
+  <div id="proof-step-card" class="well" style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span id="step-number-label" class="badge caption-3" style="align-self: flex-start;">Step 1 of 5</span>
+        <h3 id="step-title" class="heading-4 text-primary">Hypothesis: The Universal Halting Detector Exists</h3>
+        <div id="step-subtitle" class="title-4 text-info">Assume there is an algorithm HALT(P, I)</div>
       </div>
     </div>
 
     <!-- Math Formula Display -->
-    <div id="step-math-box" style="background: #020617; border: 1px solid #1e293b; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; text-align: center; font-size: 1.15rem; color: #a5f3fc;">
+    <div id="step-math-box" class="well font-mono title-3" style="text-align: center; background: var(--surface-secondary); color: var(--text-primary); padding: 16px;">
       $$ \text{HALT}(P, I) = \begin{cases} \text{HALT} & \text{if } P(I) \text{ halts} \\ \text{LOOP} & \text{if } P(I) \text{ runs forever} \end{cases} $$
     </div>
 
-    <div id="step-description" style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.7; white-space: pre-line;">
-      Suppose computer scientists discover a universal program `HALT(P, I)` that takes any program description P and any input I, and always returns HALT or LOOP in finite time without getting stuck.
+    <div id="step-description" class="body-3 text-secondary" style="line-height: 1.7; white-space: pre-line;">
+      Suppose computer scientists discover a universal program HALT(P, I) that takes any program description P and any input I, and always returns HALT or LOOP in finite time without getting stuck.
     </div>
   </div>
-</div>
+</section>
 
-<!-- Interactive Adversary & Paradox Simulator -->
-<div class="card" style="margin-bottom: 2rem;">
-  <div class="card-title">
-    <span>The Self-Referential Engine: Testing OPPOSITE(&lang;OPPOSITE&rang;)</span>
-    <span class="badge badge-red">Interactive Paradox Simulator</span>
+<!-- Interactive Adversary & Paradox Simulator Section -->
+<section class="card" style="margin-bottom: 32px;" aria-label="Self referential engine">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <i class="ph ph-circuitry" aria-hidden="true" style="font-size: 20px; color: var(--action-primary);"></i>
+      <h2 class="title-1">The self referential engine: testing OPPOSITE(&lang;OPPOSITE&rang;)</h2>
+    </div>
+    <span class="badge caption-3">Interactive paradox simulator</span>
   </div>
-  <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+  <p class="body-5 text-secondary" style="margin-bottom: 20px;">
     Choose what the hypothetical universal detector predicts for the adversary machine running on itself,
     and observe how the adversary's logic intentionally triggers an undeniable contradiction:
   </p>
 
-  <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-    <button id="btn-predict-halt" class="btn btn-primary" style="background: #2563eb;">
-      <span>Case A: Force Detector to Predict "HALT"</span>
+  <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+    <button id="btn-predict-halt" class="btn btn-primary button-md" type="button">
+      <i class="ph ph-play" aria-hidden="true"></i>
+      <span>Case A: Force detector to predict "HALT"</span>
     </button>
-    <button id="btn-predict-loop" class="btn btn-secondary" style="background: #475569;">
-      <span>Case B: Force Detector to Predict "LOOP"</span>
+    <button id="btn-predict-loop" class="btn btn-secondary button-md" type="button">
+      <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+      <span>Case B: Force detector to predict "LOOP"</span>
     </button>
   </div>
 
   <!-- Interactive Paradox Box Output -->
   <div id="paradox-output-container" class="paradox-box" style="display: none;">
-    <div class="paradox-title">
-      <span>⚡ MATHEMATICAL CONTRADICTION DETECTED!</span>
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+      <i class="ph ph-warning-circle text-error" aria-hidden="true" style="font-size: 24px;"></i>
+      <span class="heading-4 text-error">Mathematical contradiction detected</span>
     </div>
 
-    <div class="grid-2" style="margin-top: 1rem;">
-      <div>
-        <h4 style="color: #fca5a5; margin-bottom: 0.5rem;">Adversary Code Trace:</h4>
-        <pre id="adversary-code-trace" style="background: #020617; border: 1px solid #7f1d1d; border-radius: var(--radius-sm); padding: 1rem; color: #a5f3fc; font-family: var(--font-mono); font-size: 0.82rem; overflow-x: auto; line-height: 1.5;"></pre>
+    <div class="grid-2">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h4 class="title-3 text-secondary">Adversary code trace</h4>
+        <pre id="adversary-code-trace" class="well font-mono caption-2" style="background: var(--surface-primary-subtle); color: var(--text-info); overflow-x: auto; line-height: 1.5; white-space: pre-wrap;"></pre>
       </div>
 
-      <div>
-        <h4 style="color: #fca5a5; margin-bottom: 0.5rem;">Logical Breakdown:</h4>
-        <div id="adversary-detail-trace" style="background: #020617; border: 1px solid #7f1d1d; border-radius: var(--radius-sm); padding: 1rem; color: #fecaca; font-size: 0.88rem; line-height: 1.6; white-space: pre-line;"></div>
-        <div style="margin-top: 1rem; background: rgba(239, 68, 68, 0.2); border: 1px solid var(--accent-red); padding: 0.75rem; border-radius: var(--radius-sm); color: #fff; font-weight: 600; text-align: center;">
-          &there4; Neither prediction is sound &rArr; No such detector can exist!
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h4 class="title-3 text-secondary">Logical breakdown</h4>
+        <div id="adversary-detail-trace" class="well body-5 text-secondary" style="background: var(--surface-primary-subtle); line-height: 1.6; white-space: pre-line;"></div>
+        <div class="well" style="margin-top: 12px; text-align: center; border: 1px solid var(--border-error); background: var(--surface-primary-subtle);">
+          <span class="caption-1 text-primary">Therefore neither prediction is sound; no such detector can exist.</span>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Program Analyzer Explorer: Why Static Halting Analysis Fails -->
-<div class="card">
-  <div class="card-title">
-    <span>Static Analysis Limits & Open Conjectures</span>
-    <span class="badge badge-purple">Rice's Theorem Connection</span>
+<!-- Program Analyzer Explorer Section -->
+<section class="card" aria-label="Static analysis limits">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <i class="ph ph-code" aria-hidden="true" style="font-size: 20px; color: var(--action-primary);"></i>
+      <h2 class="title-1">Static analysis limits and open conjectures</h2>
+    </div>
+    <span class="badge caption-3">Rice's theorem connection</span>
   </div>
-  <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
-    Why can't a compiler or AI inspect arbitrary code and prove whether it halts?
-    If a general halting algorithm existed, it could solve the hardest unsolved problems in mathematics
-    simply by checking if a search loop ever halts:
+  <p class="body-5 text-secondary" style="margin-bottom: 16px;">
+    Why can a compiler or verification tool not inspect arbitrary code and determine whether it halts?
+    If a general halting algorithm existed, it could resolve the hardest unsolved problems in mathematics
+    simply by checking if a search loop ever terminates:
   </p>
 
-  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
-    <button class="btn btn-secondary btn-sample-prog active" data-id="simple_terminating">Simple Countdown</button>
-    <button class="btn btn-secondary btn-sample-prog" data-id="infinite_loop">Unconditional While-True</button>
-    <button class="btn btn-secondary btn-sample-prog" data-id="collatz">Collatz 3n + 1 Conjecture</button>
-    <button class="btn btn-secondary btn-sample-prog" data-id="goldbach">Goldbach Conjecture Verifier</button>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+    <button class="btn btn-secondary button-sm btn-sample-prog active" data-id="simple_terminating" type="button">Simple countdown</button>
+    <button class="btn btn-secondary button-sm btn-sample-prog" data-id="infinite_loop" type="button">Unconditional while true</button>
+    <button class="btn btn-secondary button-sm btn-sample-prog" data-id="collatz" type="button">Collatz 3n + 1 conjecture</button>
+    <button class="btn btn-secondary button-sm btn-sample-prog" data-id="goldbach" type="button">Goldbach conjecture verifier</button>
   </div>
 
-  <div id="sample-program-box" style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
-    <h3 id="sample-title" style="color: #93c5fd; font-size: 1.1rem; margin-bottom: 0.5rem;">Simple Counter (Guaranteed Halt)</h3>
-    <pre id="sample-code" style="background: #020617; padding: 0.75rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.85rem; color: #6ee7b7; margin-bottom: 0.75rem; overflow-x: auto;"></pre>
-    <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-      <span>True Behavior: <strong id="sample-outcome" style="color: #fff;">HALTS</strong></span>
+  <div id="sample-program-box" class="well" style="display: flex; flex-direction: column; gap: 12px;">
+    <h3 id="sample-title" class="title-2 text-info">Simple counter (guaranteed halt)</h3>
+    <pre id="sample-code" class="well font-mono caption-2" style="background: var(--surface-secondary); color: var(--text-success); overflow-x: auto;"></pre>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <span class="caption-2 text-secondary">True behavior: <strong id="sample-outcome" class="text-primary font-mono" style="font-weight: 600;">HALTS</strong></span>
     </div>
-    <p id="sample-desc" style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;"></p>
+    <p id="sample-desc" class="body-5 text-secondary" style="line-height: 1.6;"></p>
   </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

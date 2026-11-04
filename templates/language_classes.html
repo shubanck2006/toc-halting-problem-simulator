@@ -1,171 +1,196 @@
 {% extends "base.html" %}
 
-{% block title %}Module 4: Recursive vs Recursively Enumerable Languages - TOC Project{% endblock %}
+{% block title %}Module 4: Recursive and recursively enumerable languages - TOC Project{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-    <span class="badge badge-cyan">Module 4</span>
-    <span class="badge badge-blue">Language Hierarchy</span>
-    <span class="badge badge-purple">Deciders vs Recognizers</span>
+<header class="page-header">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-cyan caption-3">Module 4</span>
+    <span class="badge badge-blue caption-3">Language hierarchy</span>
+    <span class="badge badge-purple caption-3">Deciders and recognizers</span>
   </div>
-  <h1 class="page-title">Recursive vs. Recursively Enumerable Languages</h1>
-  <p class="page-lead">
-    Compare the execution behaviors of a <strong>Decider</strong> (which halts on every input) versus a
-    <strong>Recognizer</strong> (which may loop indefinitely on non-members).
+  <h1 class="page-title heading-2">Recursive and recursively enumerable languages</h1>
+  <p class="page-lead body-3" style="max-width: 65ch;">
+    Compare how a decider, which halts on every input, behaves next to a recognizer,
+    which may loop forever on strings outside the language.
   </p>
-</div>
+</header>
 
-<!-- Interactive Comparison Runner -->
-<div class="card" style="margin-bottom: 2rem;">
+<div id="page-notice" class="inline-notice" role="status" aria-live="polite" hidden></div>
+
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Interactive execution comparison">
   <div class="card-title">
-    <span>Interactive Execution Comparison: Language $L = \{w \in \{0,1\}^* \mid w \text{ has an odd number of '1's}\}$</span>
-    <span class="badge badge-green">Live Test</span>
+    <h2 class="title-2">Interactive execution comparison</h2>
+    <span class="badge badge-green caption-3">Live test</span>
   </div>
-  <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
-    Enter a binary string to run both machines simultaneously. Notice how the Decider halts with a definitive verdict (Accept or Reject),
-    while the Recognizer loops indefinitely when given an invalid input (even count of 1s).
+
+  <p class="body-5" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-200);">
+    For the language $L = \{w \in \{0,1\}^* \mid w \text{ has an odd number of } 1\text{s}\}$,
+    enter a binary string to run both machines at the same time. The decider always halts with a
+    verdict, while the recognizer loops forever when the count of ones is even.
   </p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <label class="form-label" for="lang-input-string">Test String:</label>
-      <input type="text" id="lang-input-string" class="form-input" value="101" placeholder="e.g. 101, 100, 1111" style="font-family: var(--font-mono); width: 180px;">
+  <div style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end; margin-bottom: var(--sp-300);">
+    <div>
+      <label class="form-label caption-1" for="lang-input-string">Test string</label>
+      <input type="text" id="lang-input-string" class="form-input font-mono body-5" value="101" placeholder="e.g. 101" style="width: 180px;">
     </div>
 
-    <div style="display: flex; gap: 0.5rem;">
-      <button class="btn btn-secondary btn-preset-str" data-val="101">Try "101" (2 ones &rarr; Invalid)</button>
-      <button class="btn btn-secondary btn-preset-str" data-val="10101">Try "10101" (3 ones &rarr; Valid)</button>
-      <button class="btn btn-secondary btn-preset-str" data-val="000">Try "000" (0 ones &rarr; Invalid)</button>
+    <div style="display: flex; gap: var(--sp-75); flex-wrap: wrap;">
+      <button type="button" class="btn btn-secondary btn-preset-str button-sm" data-val="101">101, two ones, invalid</button>
+      <button type="button" class="btn btn-secondary btn-preset-str button-sm" data-val="10101">10101, three ones, valid</button>
+      <button type="button" class="btn btn-secondary btn-preset-str button-sm" data-val="000">000, no ones, invalid</button>
     </div>
 
-    <button id="btn-run-comparison" class="btn btn-primary" style="margin-left: auto;">
-      <span>⚡ Run Both Machines</span>
+    <button type="button" id="btn-run-comparison" class="btn btn-primary button-sm" style="margin-left: auto;">
+      <i class="ph ph-play" aria-hidden="true"></i>
+      <span>Run both machines</span>
     </button>
   </div>
 
-  <!-- Side-by-Side Execution Cards -->
+  <!-- Side by side execution panels -->
   <div class="grid-2">
     <!-- Machine A: Decider -->
-    <div class="card" style="background: #0d1527; border-top: 4px solid var(--accent-blue);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; color: #93c5fd;">1. The Decider (Recursive / Decidable)</h3>
-        <span id="decider-status-badge" class="status-indicator status-INITIALIZED">READY</span>
+    <article class="well" aria-label="Decider execution">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--sp-100); flex-wrap: wrap; margin-bottom: var(--sp-100);">
+        <h3 class="title-3">The decider (recursive, decidable)</h3>
+        <span id="decider-status-badge" class="status-indicator status-INITIALIZED caption-3">Ready</span>
       </div>
-      <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-        Guaranteed to halt on <strong>all</strong> inputs. Accepts if $w \in L$, rejects if $w \notin L$.
+
+      <p class="body-5" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-100);">
+        Guaranteed to halt on <strong>all</strong> inputs. It accepts when $w \in L$ and rejects when $w \notin L$.
       </p>
-      <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.5rem;">
-        Steps to halt: <strong id="decider-steps" style="color: #fff;">0</strong>
+
+      <div class="body-5 font-mono" style="display: flex; justify-content: space-between; gap: var(--sp-100); color: var(--text-secondary); font-variant-numeric: tabular-nums; margin-bottom: var(--sp-50);">
+        <span>Steps to halt</span>
+        <strong id="decider-steps" style="color: var(--text-primary);">0</strong>
       </div>
-      <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.75rem;">
-        Final Tape: <span id="decider-tape" style="color: #67e8f9;">-</span>
+
+      <div class="body-5 font-mono" style="display: flex; justify-content: space-between; gap: var(--sp-100); color: var(--text-secondary); margin-bottom: var(--sp-100);">
+        <span>Final tape</span>
+        <span id="decider-tape" style="color: var(--text-info);">-</span>
       </div>
-      <div id="decider-explanation" style="font-size: 0.85rem; color: #94a3b8; background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-blue);">
-        Click 'Run Both Machines' to execute.
+
+      <div id="decider-explanation" class="body-5" style="color: var(--text-secondary); background: var(--surface-primary-subtle); border: 1px solid var(--border-primary); border-radius: var(--r-8); padding: var(--sp-100);">
+        Run both machines to see the execution trace.
       </div>
-    </div>
+    </article>
 
     <!-- Machine B: Recognizer -->
-    <div class="card" style="background: #0d1527; border-top: 4px solid var(--accent-purple);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; color: #d8b4fe;">2. The Recognizer (Recursively Enumerable)</h3>
-        <span id="recognizer-status-badge" class="status-indicator status-INITIALIZED">READY</span>
+    <article class="well" aria-label="Recognizer execution">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--sp-100); flex-wrap: wrap; margin-bottom: var(--sp-100);">
+        <h3 class="title-3">The recognizer (recursively enumerable)</h3>
+        <span id="recognizer-status-badge" class="status-indicator status-INITIALIZED caption-3">Ready</span>
       </div>
-      <p style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-        Halts and accepts if $w \in L$. If $w \notin L$, it enters an <strong>infinite loop</strong>!
-      </p>
-      <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.5rem;">
-        Steps taken: <strong id="recognizer-steps" style="color: #fff;">0</strong>
-      </div>
-      <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.75rem;">
-        Final Tape: <span id="recognizer-tape" style="color: #d8b4fe;">-</span>
-      </div>
-      <div id="recognizer-explanation" style="font-size: 0.85rem; color: #94a3b8; background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-purple);">
-        Click 'Run Both Machines' to execute.
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Formal Comparison Table -->
-<div class="card" style="margin-bottom: 2rem;">
-  <div class="card-title">
-    <span>Formal Comparison: Recursive ($R$) vs. Recursively Enumerable ($RE$)</span>
-    <span class="badge badge-purple">TOC Theory Reference</span>
+      <p class="body-5" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-100);">
+        Halts and accepts when $w \in L$. When $w \notin L$ it enters an <strong>infinite loop</strong> and never returns a verdict.
+      </p>
+
+      <div class="body-5 font-mono" style="display: flex; justify-content: space-between; gap: var(--sp-100); color: var(--text-secondary); font-variant-numeric: tabular-nums; margin-bottom: var(--sp-50);">
+        <span>Steps taken</span>
+        <strong id="recognizer-steps" style="color: var(--text-primary);">0</strong>
+      </div>
+
+      <div class="body-5 font-mono" style="display: flex; justify-content: space-between; gap: var(--sp-100); color: var(--text-secondary); margin-bottom: var(--sp-100);">
+        <span>Final tape</span>
+        <span id="recognizer-tape" style="color: var(--text-info);">-</span>
+      </div>
+
+      <div id="recognizer-explanation" class="body-5" style="color: var(--text-secondary); background: var(--surface-primary-subtle); border: 1px solid var(--border-primary); border-radius: var(--r-8); padding: var(--sp-100);">
+        Run both machines to see the execution trace.
+      </div>
+    </article>
   </div>
+</section>
+
+<!-- Formal comparison table -->
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Formal comparison of language classes">
+  <div class="card-title">
+    <h2 class="title-2">Formal comparison of $R$ and $RE$</h2>
+    <span class="badge badge-purple caption-3">Theory reference</span>
+  </div>
+
   <div class="table-wrap">
-    <table class="table-custom">
+    <table class="table-custom body-5">
       <thead>
         <tr>
-          <th>Property</th>
-          <th style="color: #93c5fd;">Recursive Language (Decidable, $R$)</th>
-          <th style="color: #d8b4fe;">Recursively Enumerable Language (Turing-Recognizable, $RE$)</th>
+          <th class="title-4">Property</th>
+          <th class="title-4">Recursive language (decidable, $R$)</th>
+          <th class="title-4">Recursively enumerable language (Turing recognizable, $RE$)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Machine Type</td>
-          <td>Turing Machine that is a <strong>Decider</strong> (Total Turing Machine).</td>
-          <td>Standard Turing Machine (<strong>Recognizer</strong> or Semi-Decider).</td>
+          <td><strong>Machine type</strong></td>
+          <td>A Turing machine that is a <strong>decider</strong> (total Turing machine).</td>
+          <td>A standard Turing machine, also called a <strong>recognizer</strong> or semi decider.</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Behavior on $w \in L$</td>
-          <td><span style="color: var(--accent-green); font-weight: bold;">Halts and Accepts</span></td>
-          <td><span style="color: var(--accent-green); font-weight: bold;">Halts and Accepts</span></td>
+          <td><strong>Behavior on $w \in L$</strong></td>
+          <td><span class="body-4" style="color: var(--text-success);">Halts and accepts</span></td>
+          <td><span class="body-4" style="color: var(--text-success);">Halts and accepts</span></td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Behavior on $w \notin L$</td>
-          <td><span style="color: var(--accent-red); font-weight: bold;">Halts and Rejects</span> in finite time.</td>
-          <td><span style="color: var(--accent-amber); font-weight: bold;">May loop forever!</span> Never returns a definitive "NO".</td>
+          <td><strong>Behavior on $w \notin L$</strong></td>
+          <td><span class="body-4" style="color: var(--text-error);">Halts and rejects</span> in finite time.</td>
+          <td><span class="body-4" style="color: var(--text-warning);">May loop forever</span> and never returns a definitive no.</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Decidability Status</td>
-          <td>Decidable / Solvable.</td>
-          <td>Partially Decidable / Semi-Decidable.</td>
+          <td><strong>Decidability status</strong></td>
+          <td>Decidable and solvable.</td>
+          <td>Partially decidable or semi decidable.</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Closure Under Complement</td>
+          <td><strong>Closure under complement</strong></td>
           <td><strong>Closed.</strong> If $L \in R$, then $\overline{L} \in R$.</td>
-          <td><strong>NOT closed.</strong> $L \in R \iff (L \in RE \text{ and } \overline{L} \in RE)$.</td>
+          <td><strong>Not closed.</strong> $L \in R \iff (L \in RE \text{ and } \overline{L} \in RE)$.</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Chomsky Hierarchy</td>
-          <td>Strict subset of Type-0 (decidable subset).</td>
-          <td>Exact equivalent to Type-0 (Unrestricted Grammars).</td>
+          <td><strong>Chomsky hierarchy</strong></td>
+          <td>A strict subset of type 0 languages.</td>
+          <td>Exactly equivalent to type 0 (unrestricted grammars).</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; color: #fff;">Real-World Analogy</td>
-          <td>A compiler syntax checker that always finishes and prints YES/NO.</td>
-          <td>A search engine looking for a specific star in an infinite universe.</td>
+          <td><strong>Real world analogy</strong></td>
+          <td>A compiler syntax checker that always finishes and prints yes or no.</td>
+          <td>A search engine looking for one specific star in an infinite universe.</td>
         </tr>
       </tbody>
     </table>
   </div>
-</div>
+</section>
 
-<!-- Chomsky Venn Hierarchy Graphic -->
-<div class="card" style="background: #0f172a;">
-  <h3 class="card-title">The Hierarchy of Languages</h3>
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem 0;">
-    <div style="width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 0.6rem;">
-      <div style="background: rgba(239, 68, 68, 0.15); border: 2px dashed var(--accent-red); border-radius: var(--radius-md); padding: 1rem; text-align: center;">
-        <strong style="color: #fca5a5;">All Languages ($\mathcal{P}(\Sigma^*)$ - Uncountable: $2^{\aleph_0}$)</strong>
-        <div style="margin-top: 0.6rem; background: rgba(139, 92, 246, 0.2); border: 2px solid var(--accent-purple); border-radius: var(--radius-md); padding: 1rem;">
-          <strong style="color: #d8b4fe;">Recursively Enumerable ($RE$ / Type-0) - Countable: $\aleph_0$</strong>
-          <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.2rem;">Recognized by Turing Machines (e.g., $H_{\text{TM}}$ Halting Language)</p>
-          <div style="margin-top: 0.6rem; background: rgba(59, 130, 246, 0.25); border: 2px solid var(--accent-blue); border-radius: var(--radius-md); padding: 1rem;">
-            <strong style="color: #93c5fd;">Recursive Languages ($R$ / Decidable)</strong>
-            <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.2rem;">Decided by Turing Machines that always halt</p>
-            <div style="margin-top: 0.6rem; background: rgba(16, 185, 129, 0.25); border: 1px solid var(--accent-green); border-radius: var(--radius-md); padding: 0.6rem;">
-              <span style="color: #6ee7b7; font-weight: 600;">Context-Sensitive $\subset$ Context-Free $\subset$ Regular</span>
+<!-- Chomsky hierarchy graphic -->
+<section class="card" aria-label="Hierarchy of languages">
+  <div class="card-title">
+    <h2 class="title-2">The hierarchy of languages</h2>
+    <span class="badge badge-blue caption-3">Chomsky hierarchy</span>
+  </div>
+
+  <div style="display: flex; justify-content: center; padding: var(--sp-200) 0;">
+    <div style="width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: var(--sp-100);">
+      <div class="well" style="border: 1px solid var(--border-primary); border-radius: var(--r-12); padding: var(--sp-200); text-align: center;">
+        <div class="title-3">All languages $\mathcal{P}(\Sigma^*)$</div>
+        <p class="caption-2" style="color: var(--text-tertiary); margin-top: var(--sp-25);">Uncountable, $2^{\aleph_0}$</p>
+
+        <div class="well" style="border: 1px solid var(--border-primary); border-radius: var(--r-8); padding: var(--sp-200); margin-top: var(--sp-100);">
+          <div class="title-3">Recursively enumerable, $RE$ or type 0</div>
+          <p class="caption-2" style="color: var(--text-tertiary); margin-top: var(--sp-25);">Countable, $\aleph_0$, recognized by Turing machines such as $H_{\text{TM}}$</p>
+
+          <div class="well" style="border: 1px solid var(--border-primary); border-radius: var(--r-8); padding: var(--sp-200); margin-top: var(--sp-100);">
+            <div class="title-3">Recursive, $R$ or decidable</div>
+            <p class="caption-2" style="color: var(--text-tertiary); margin-top: var(--sp-25);">Decided by Turing machines that always halt</p>
+
+            <div class="well" style="border: 1px solid var(--border-primary); border-radius: var(--r-6); padding: var(--sp-100); margin-top: var(--sp-100);">
+              <span class="body-4 font-mono" style="color: var(--text-secondary);">Context sensitive $\subset$ context free $\subset$ regular</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

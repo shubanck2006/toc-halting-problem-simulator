@@ -16,6 +16,22 @@ document.addEventListener("DOMContentLoaded", function () {
   initSimulator();
 });
 
+function showSimulatorNotice(msg, type = "error") {
+  if (typeof window.showInlineNotice === "function") {
+    window.showInlineNotice(msg, type, "page-notice");
+    return;
+  }
+  const noticeEl = document.getElementById("page-notice");
+  if (noticeEl) {
+    noticeEl.textContent = msg;
+    noticeEl.className = `inline-notice inline-notice-${type}`;
+    noticeEl.hidden = false;
+    noticeEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  } else {
+    console.warn(`[${type}] ${msg}`);
+  }
+}
+
 function initSimulator() {
   const machineSelect = document.getElementById("machine-select");
   const btnLoad = document.getElementById("btn-load");
@@ -93,9 +109,9 @@ function initSimulator() {
         currentMachine = parsed;
         setupMachineUI(currentMachine);
         resetMachineState();
-        alert("Custom Turing Machine applied successfully!");
+        showSimulatorNotice("Custom machine configuration loaded.", "info");
       } catch (err) {
-        alert("Invalid JSON: " + err.message);
+        showSimulatorNotice("Invalid JSON syntax in custom machine definition. Check brackets and quotes, then apply again.", "error");
       }
     });
   }
@@ -123,6 +139,7 @@ async function loadMachine(machineId) {
     }
   } catch (err) {
     console.error("Failed to load machine:", err);
+    showSimulatorNotice("Failed to load machine configuration from server.", "error");
   }
 }
 
@@ -135,8 +152,8 @@ function setupMachineUI(m) {
   const start = m.initial_state || (states.length ? states[0] : "q0");
 
   document.getElementById("machine-desc-box").innerHTML = `
-    <strong>${m.name || "Turing Machine"}:</strong> ${m.description || ""}
-    <div style="margin-top: 0.3rem; font-family: var(--font-mono); font-size: 0.8rem; color: #94a3b8;">
+    <div><strong style="color: var(--text-primary);">${m.name || "Turing Machine"}:</strong> <span style="color: var(--text-secondary);">${m.description || ""}</span></div>
+    <div style="margin-top: var(--sp-50); font-family: var(--font-mono); color: var(--text-tertiary);">
       States Q = {${states.join(", ")}} | &Sigma; = {${inAlpha.join(", ")}} |
       &Gamma; = {${tapeAlpha.join(", ")}} | Blank = '${blank}' |
       Start = ${start} | Accept F = {${accStates.join(", ")}}
@@ -148,13 +165,13 @@ function setupMachineUI(m) {
   tbody.innerHTML = "";
   if (m.transitions && m.transitions.length) {
     document.getElementById("rule-count-badge").innerText = `${m.transitions.length} Rules`;
-    m.transitions.forEach((t, i) => {
+    m.transitions.forEach((t) => {
       const row = document.createElement("tr");
       row.id = `rule-row-${t.current_state}-${t.read_symbol}`;
       row.innerHTML = `
-        <td><strong>${t.current_state}</strong></td>
+        <td><strong style="color: var(--text-primary);">${t.current_state}</strong></td>
         <td><code>${t.read_symbol}</code></td>
-        <td><strong>${t.next_state}</strong></td>
+        <td><strong style="color: var(--text-primary);">${t.next_state}</strong></td>
         <td><code>${t.write_symbol}</code></td>
         <td><code>${t.direction}</code></td>
       `;
@@ -192,9 +209,27 @@ function renderStateGraph(m) {
 
   container.innerHTML = `<div class="mermaid" id="mermaid-graph-inner">${code}</div>`;
   if (window.mermaid) {
-    mermaid.run({ nodes: [document.getElementById("mermaid-graph-inner")] }).catch(err => {
-      console.warn("Mermaid render error:", err);
-    });
+    try {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#1F1F1F',
+          primaryColor: '#272727',
+          primaryTextColor: '#F5F5F5',
+          primaryBorderColor: '#313131',
+          lineColor: '#82B1E1',
+          secondaryColor: '#181818',
+          tertiaryColor: '#1F1F1F'
+        }
+      });
+      mermaid.run({ nodes: [document.getElementById("mermaid-graph-inner")] }).catch(err => {
+        console.warn("Mermaid render error:", err);
+      });
+    } catch (err) {
+      console.warn("Mermaid init error:", err);
+    }
   }
 }
 
@@ -248,14 +283,14 @@ function renderTape() {
 
     const pointer = document.createElement("div");
     pointer.className = "tape-head-pointer" + (isHead ? " visible" : "");
-    pointer.innerText = "▼";
+    pointer.innerHTML = '<i class="ph ph-caret-down" aria-hidden="true"></i>';
 
     const cell = document.createElement("div");
     cell.className = "tape-cell" + (isHead ? " active-head" : "");
     cell.innerText = sym;
 
     const index = document.createElement("div");
-    index.className = "tape-cell-index";
+    index.className = "tape-cell-index font-mono";
     index.innerText = i;
 
     cellWrap.appendChild(pointer);
@@ -272,7 +307,7 @@ function updateMetrics() {
   document.getElementById("metric-symbol").innerText = readCurrentSymbol();
 
   const statusBadge = document.getElementById("status-badge");
-  statusBadge.className = `status-indicator status-${currentStatus}`;
+  statusBadge.className = `status-indicator status-${currentStatus} caption-3`;
   statusBadge.innerText = currentStatus;
 
   // Instantaneous Description (ID)
@@ -328,7 +363,7 @@ async function executeStep() {
   if (currentStep >= stepLimit) {
     currentStatus = "STEP_LIMIT_REACHED";
     updateMetrics();
-    logStep(`Safety limit of ${stepLimit} steps reached. Execution paused. Non-termination is undecidable.`, "STEP_LIMIT_REACHED");
+    logStep(`Safety limit of ${stepLimit} steps reached. Execution paused. Nonterminating computation is undecidable.`, "STEP_LIMIT_REACHED");
     if (isPlaying) togglePlay();
     return;
   }
@@ -353,7 +388,7 @@ async function executeStep() {
 
     const data = await res.json();
     if (!data.success) {
-      alert("Step error: " + data.error);
+      showSimulatorNotice("Step execution failed: " + (data.error || "unknown server error"), "error");
       if (isPlaying) togglePlay();
       return;
     }
@@ -379,6 +414,7 @@ async function executeStep() {
     }
   } catch (err) {
     console.error("Step execution failed:", err);
+    showSimulatorNotice("Network communication error during step execution.", "error");
     if (isPlaying) togglePlay();
   }
 }
@@ -388,15 +424,15 @@ function togglePlay() {
   if (isPlaying) {
     isPlaying = false;
     clearInterval(playTimer);
-    btn.innerHTML = "<span>▶ Play</span>";
-    btn.className = "btn btn-success";
+    btn.innerHTML = '<i class="ph ph-play" aria-hidden="true"></i><span>Play</span>';
+    btn.className = "btn btn-success button-sm";
   } else {
     if (currentStatus === "ACCEPTED" || currentStatus === "REJECTED" || currentStatus === "STEP_LIMIT_REACHED") {
       resetMachineState();
     }
     isPlaying = true;
-    btn.innerHTML = "<span>⏸ Pause</span>";
-    btn.className = "btn btn-danger";
+    btn.innerHTML = '<i class="ph ph-pause" aria-hidden="true"></i><span>Pause</span>';
+    btn.className = "btn btn-danger button-sm";
     playTimer = setInterval(executeStep, playSpeed);
   }
 }
@@ -422,7 +458,7 @@ async function runToCompletion() {
 
     const data = await res.json();
     if (!data.success) {
-      alert("Simulation run error: " + data.error);
+      showSimulatorNotice("Simulation run failed: " + (data.error || "unknown server error"), "error");
       return;
     }
 
@@ -451,11 +487,12 @@ async function runToCompletion() {
         if (h.note) {
           const entry = document.createElement("div");
           entry.className = "log-entry";
+          const badgeClass = h.status === 'ACCEPTED' ? 'badge-green' : h.status === 'REJECTED' ? 'badge-red' : 'badge-blue';
           entry.innerHTML = `
-            <span class="badge badge-${h.status === 'ACCEPTED' ? 'green' : h.status === 'REJECTED' ? 'red' : 'blue'}" style="font-size: 0.7rem;">
+            <span class="badge ${badgeClass} caption-3 font-mono">
               Step ${h.step}
             </span>
-            <span style="color: #cbd5e1;">${h.note}</span>
+            <span style="color: var(--text-primary);">${h.note}</span>
           `;
           box.prepend(entry);
         }
@@ -467,6 +504,7 @@ async function runToCompletion() {
     }
   } catch (err) {
     console.error("Run all failed:", err);
+    showSimulatorNotice("Network communication error during simulation run.", "error");
   }
 }
 
@@ -474,11 +512,12 @@ function logStep(msg, status) {
   const box = document.getElementById("history-log");
   const entry = document.createElement("div");
   entry.className = "log-entry";
+  const badgeClass = status === 'ACCEPTED' ? 'badge-green' : status === 'REJECTED' ? 'badge-red' : 'badge-blue';
   entry.innerHTML = `
-    <span class="badge badge-${status === 'ACCEPTED' ? 'green' : status === 'REJECTED' ? 'red' : 'blue'}" style="font-size: 0.7rem;">
+    <span class="badge ${badgeClass} caption-3 font-mono">
       Step ${currentStep}
     </span>
-    <span style="color: #cbd5e1;">${msg}</span>
+    <span style="color: var(--text-primary);">${msg}</span>
   `;
   box.prepend(entry);
 }

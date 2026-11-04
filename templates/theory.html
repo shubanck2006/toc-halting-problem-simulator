@@ -1,124 +1,137 @@
 {% extends "base.html" %}
 
-{% block title %}Module 6: Theory of Computation Explorer - TOC Project{% endblock %}
+{% block title %}Module 6: Theory of computation explorer - TOC Project{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-    <span class="badge badge-purple">Module 6</span>
-    <span class="badge badge-blue">Syllabus Theory Explorer</span>
-    <span class="badge badge-green">Interactive Demonstrations</span>
+<header class="page-header">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-purple caption-3">Module 6</span>
+    <span class="badge badge-blue caption-3">Syllabus theory explorer</span>
+    <span class="badge badge-green caption-3">Interactive demonstrations</span>
   </div>
-  <h1 class="page-title">Theory of Computation Explorer</h1>
-  <p class="page-lead">
-    In-depth theoretical foundations and interactive demonstrations covering the remaining Module 5 syllabus concepts:
-    Church's Thesis, Countability, TM Variants, Rice's Theorem, Post Correspondence Problem (PCP), and Undecidability reductions.
+  <h1 class="page-title heading-2">Theory of computation explorer</h1>
+  <p class="page-lead body-3" style="max-width: 65ch;">
+    Theoretical foundations and interactive demonstrations for the remaining syllabus concepts:
+    the Church and Turing thesis, countability, Turing machine variants, Rice's theorem,
+    the Post Correspondence Problem, and undecidability reductions.
   </p>
-</div>
+</header>
 
-<!-- Theory Navigation Tabs -->
-<div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;">
-  <button class="btn btn-secondary tab-btn active" data-tab="tab-church">Church-Turing Thesis</button>
-  <button class="btn btn-secondary tab-btn" data-tab="tab-countability">Countability & Cantor</button>
-  <button class="btn btn-secondary tab-btn" data-tab="tab-variants">TM Variants & Equivalence</button>
-  <button class="btn btn-secondary tab-btn" data-tab="tab-rice">Rice's Theorem</button>
-  <button class="btn btn-secondary tab-btn" data-tab="tab-pcp" style="border: 1px solid var(--accent-blue);">Interactive PCP Puzzle</button>
-  <button class="btn btn-secondary tab-btn" data-tab="tab-undecidable">Undecidable Problems</button>
-</div>
+<div id="page-notice" class="inline-notice" role="status" aria-live="polite" hidden></div>
 
-<!-- Tab 1: Church-Turing Thesis -->
-<div id="tab-church" class="theory-tab-content">
-  <div class="card" style="margin-bottom: 1.5rem;">
+<!-- Theory navigation tabs -->
+<nav style="display: flex; gap: var(--sp-75); flex-wrap: wrap; margin-bottom: var(--sp-300);" aria-label="Theory sections">
+  <button type="button" class="btn btn-primary tab-btn active button-sm" data-tab="tab-church" aria-selected="true">Church and Turing thesis</button>
+  <button type="button" class="btn btn-secondary tab-btn button-sm" data-tab="tab-countability" aria-selected="false">Countability and Cantor</button>
+  <button type="button" class="btn btn-secondary tab-btn button-sm" data-tab="tab-variants" aria-selected="false">Turing machine variants</button>
+  <button type="button" class="btn btn-secondary tab-btn button-sm" data-tab="tab-rice" aria-selected="false">Rice's theorem</button>
+  <button type="button" class="btn btn-secondary tab-btn button-sm" data-tab="tab-pcp" aria-selected="false">Interactive PCP puzzle</button>
+  <button type="button" class="btn btn-secondary tab-btn button-sm" data-tab="tab-undecidable" aria-selected="false">Undecidable problems</button>
+</nav>
+
+<!-- Tab 1: Church and Turing thesis -->
+<section id="tab-church" class="theory-tab-content" aria-label="Church and Turing thesis">
+  <div class="card" style="margin-bottom: var(--sp-300);">
     <div class="card-title">
-      <span>The Church-Turing Thesis</span>
-      <span class="badge badge-blue">Fundamental Hypothesis</span>
+      <h2 class="title-2">The Church and Turing thesis</h2>
+      <span class="badge badge-blue caption-3">Fundamental hypothesis</span>
     </div>
-    <div style="font-size: 1.15rem; color: #93c5fd; font-weight: 600; margin-bottom: 1rem;">
-      "Every effectively calculable function or algorithm can be computed by a Turing Machine."
+
+    <div class="well body-2" style="color: var(--text-primary); max-width: 65ch; margin-bottom: var(--sp-200);">
+      "Every effectively calculable function or algorithm can be computed by a Turing machine."
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-      In 1936, Alonzo Church (via $\lambda$-calculus) and Alan Turing (via Turing machines) sought to formalize the intuitive,
-      informal notion of an "algorithm" or "effective procedure". They discovered that both formalisms—despite looking radically
-      different—computed the exact same class of functions.
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
+      In 1936, Alonzo Church, working with the lambda calculus, and Alan Turing, working with Turing machines,
+      set out to formalize the intuitive notion of an algorithm or effective procedure. They found that the two
+      formalisms, despite looking radically different, computed exactly the same class of functions.
     </p>
 
-    <div class="grid-3" style="margin-top: 1.5rem;">
-      <div style="background: #0f172a; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-sm);">
-        <h4 style="color: #6ee7b7; margin-bottom: 0.4rem;">Why a "Thesis", Not a Theorem?</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">
-          Because "algorithm" is an informal, intuitive human concept, it cannot be formally proven like a mathematical theorem.
-          However, every formal model of computation invented in the last 90 years has proven computationally equivalent to Turing machines.
+    <div class="grid-3">
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Why a thesis, not a theorem</h3>
+        <p class="body-5" style="color: var(--text-secondary);">
+          An algorithm is an informal human concept, so the claim cannot be proven like a mathematical theorem.
+          Every formal model of computation invented in the last 90 years has nonetheless proven equivalent to
+          Turing machines.
         </p>
-      </div>
+      </article>
 
-      <div style="background: #0f172a; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-sm);">
-        <h4 style="color: #93c5fd; margin-bottom: 0.4rem;">Modern Equivalence</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">
-          C++, Python, Java, Quantum Computers, and multi-core supercomputers cannot decide any language that a basic 1-tape Turing Machine
-          cannot decide. If a problem is undecidable for a TM, it is undecidable for every computer in the universe.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Modern equivalence</h3>
+        <p class="body-5" style="color: var(--text-secondary);">
+          C++, Python, Java, quantum computers, and multicore supercomputers cannot decide any language that a
+          basic single tape Turing machine cannot decide. A problem that is undecidable for a Turing machine is
+          undecidable for every computer.
         </p>
-      </div>
+      </article>
 
-      <div style="background: #0f172a; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-sm);">
-        <h4 style="color: #d8b4fe; margin-bottom: 0.4rem;">Proving Limits of Software</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">
-          The thesis empowers computer scientists to establish hard physical and mathematical limits on all future software
-          simply by reasoning about 7-tuple Turing machines.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Proving the limits of software</h3>
+        <p class="body-5" style="color: var(--text-secondary);">
+          The thesis lets computer scientists establish firm physical and mathematical limits on all future
+          software by reasoning about seven tuple Turing machines.
         </p>
-      </div>
+      </article>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Tab 2: Countability & Cantor's Diagonalization -->
-<div id="tab-countability" class="theory-tab-content" style="display: none;">
-  <div class="card" style="margin-bottom: 1.5rem;">
+<!-- Tab 2: Countability and Cantor diagonalization -->
+<section id="tab-countability" class="theory-tab-content" style="display: none;" aria-label="Countability and Cantor diagonalization">
+  <div class="card" style="margin-bottom: var(--sp-300);">
     <div class="card-title">
-      <span>Countability & Cantor's Diagonalization: Why Most Problems Are Unsolvable</span>
-      <span class="badge badge-purple">Cardinality of Infinities</span>
+      <h2 class="title-2">Countability and Cantor diagonalization</h2>
+      <span class="badge badge-purple caption-3">Cardinality of infinities</span>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
       Georg Cantor proved that infinite sets have different sizes. The set of all possible Turing machines is
       <strong>countably infinite</strong> ($\aleph_0$), while the set of all possible languages is
       <strong>uncountably infinite</strong> ($2^{\aleph_0}$).
     </p>
 
-    <!-- Mathematical Deduction Box -->
-    <div style="background: #080d1a; border-left: 4px solid var(--accent-purple); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
-      <div style="font-family: var(--font-mono); font-size: 0.95rem; color: #cbd5e1; line-height: 1.8;">
-        1. Every Turing Machine $M$ has a finite string description: $\langle M \rangle \in \Sigma^*$.<br>
-        2. The set of all finite strings over a finite alphabet is countably infinite: $|\Sigma^*| = \aleph_0$.<br>
-        3. Therefore, the set of all possible Turing machines is countable: $|\{ \text{All TMs} \}| = \aleph_0$.<br>
-        4. A language is an arbitrary subset of $\Sigma^*$. The set of all languages is $\mathcal{P}(\Sigma^*)$.<br>
-        5. By Cantor's Theorem, $|\mathcal{P}(\Sigma^*)| = 2^{\aleph_0} > \aleph_0$ (Uncountably Infinite).<br>
-        <span style="color: #f87171; font-weight: bold;">Conclusion: $2^{\aleph_0} \gg \aleph_0$. There are vastly more languages than Turing machines! Almost all problems have no algorithm.</span>
-      </div>
+    <!-- Mathematical deduction -->
+    <div class="well" style="margin-bottom: var(--sp-300);">
+      <div class="caption-3" style="color: var(--text-tertiary); margin-bottom: var(--sp-100);">Deduction</div>
+      <ol class="body-5 font-mono" style="color: var(--text-secondary); display: flex; flex-direction: column; gap: var(--sp-75); padding-left: var(--sp-300); list-style: decimal;">
+        <li>Every Turing machine $M$ has a finite string description $\langle M \rangle \in \Sigma^*$.</li>
+        <li>The set of all finite strings over a finite alphabet is countably infinite, $|\Sigma^*| = \aleph_0$.</li>
+        <li>The set of all possible Turing machines is therefore countable, $|\{ \text{All TMs} \}| = \aleph_0$.</li>
+        <li>A language is an arbitrary subset of $\Sigma^*$, so the set of all languages is $\mathcal{P}(\Sigma^*)$.</li>
+        <li>By Cantor's theorem, $|\mathcal{P}(\Sigma^*)| = 2^{\aleph_0} > \aleph_0$, which is uncountably infinite.</li>
+      </ol>
+      <p class="body-5" style="color: var(--text-error); margin-top: var(--sp-200);">
+        Because $2^{\aleph_0} \gg \aleph_0$, there are vastly more languages than Turing machines,
+        and almost all problems have no algorithm at all.
+      </p>
     </div>
 
-    <!-- Interactive Diagonalization Visualizer -->
-    <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem; color: #fff;">Cantor's Diagonalization Demonstration</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-      Suppose someone claims to have an exhaustive enumerated list $s_1, s_2, s_3, \dots$ of all infinite binary strings.
-      By flipping the $i$-th bit of string $s_i$, Cantor constructs a new string $D$ that differs from <em>every</em> string in the list:
+    <!-- Diagonalization demonstration -->
+    <h3 class="title-2" style="margin-bottom: var(--sp-100);">Cantor's diagonalization demonstration</h3>
+    <p class="body-5" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-200);">
+      Suppose someone claims to have an exhaustive enumerated list $s_1, s_2, s_3, \dots$ of all infinite binary
+      strings. By flipping the bit at index $i$ of string $s_i$, Cantor constructs a new string $D$ that differs from
+      <strong>every</strong> string in the list.
     </p>
 
-    <div class="table-wrap" style="margin-bottom: 1rem;">
-      <table class="table-custom">
+    <div class="table-wrap">
+      <table class="table-custom body-5">
         <thead>
           <tr>
-            <th>Index ($i$)</th>
-            <th>Bit 1</th>
-            <th>Bit 2</th>
-            <th>Bit 3</th>
-            <th>Bit 4</th>
-            <th>Bit 5</th>
-            <th>String Notation</th>
+            <th class="title-4">Index ($i$)</th>
+            <th class="title-4">Bit 1</th>
+            <th class="title-4">Bit 2</th>
+            <th class="title-4">Bit 3</th>
+            <th class="title-4">Bit 4</th>
+            <th class="title-4">Bit 5</th>
+            <th class="title-4">String notation</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="font-mono">
           <tr>
             <td>$s_1$</td>
-            <td style="background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-weight: bold;">0</td>
+            <td class="body-4" style="background: var(--surface-secondary); color: var(--text-info);">0</td>
             <td>1</td>
             <td>0</td>
             <td>1</td>
@@ -128,7 +141,7 @@
           <tr>
             <td>$s_2$</td>
             <td>1</td>
-            <td style="background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-weight: bold;">1</td>
+            <td class="body-4" style="background: var(--surface-secondary); color: var(--text-info);">1</td>
             <td>0</td>
             <td>0</td>
             <td>1</td>
@@ -138,7 +151,7 @@
             <td>$s_3$</td>
             <td>0</td>
             <td>0</td>
-            <td style="background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-weight: bold;">0</td>
+            <td class="body-4" style="background: var(--surface-secondary); color: var(--text-info);">0</td>
             <td>1</td>
             <td>1</td>
             <td>00011...</td>
@@ -148,7 +161,7 @@
             <td>1</td>
             <td>0</td>
             <td>1</td>
-            <td style="background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-weight: bold;">0</td>
+            <td class="body-4" style="background: var(--surface-secondary); color: var(--text-info);">0</td>
             <td>0</td>
             <td>10100...</td>
           </tr>
@@ -158,283 +171,316 @@
             <td>1</td>
             <td>1</td>
             <td>1</td>
-            <td style="background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-weight: bold;">0</td>
+            <td class="body-4" style="background: var(--surface-secondary); color: var(--text-info);">0</td>
             <td>01110...</td>
           </tr>
-          <tr style="background: rgba(239, 68, 68, 0.2); font-weight: bold;">
-            <td style="color: #fca5a5;">Diagonal Bit $s_{ii}$</td>
+          <tr style="background: var(--surface-error-subtle);">
+            <td class="body-4" style="color: var(--text-error);">Diagonal bit $s_{ii}$</td>
             <td>0</td>
             <td>1</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td>Diagonal = 01000...</td>
+            <td>Diagonal is 01000...</td>
           </tr>
-          <tr style="background: rgba(16, 185, 129, 0.2); font-weight: bold;">
-            <td style="color: #6ee7b7;">Flipped ($1 - s_{ii}$)</td>
-            <td style="color: #6ee7b7;">1</td>
-            <td style="color: #6ee7b7;">0</td>
-            <td style="color: #6ee7b7;">1</td>
-            <td style="color: #6ee7b7;">1</td>
-            <td style="color: #6ee7b7;">1</td>
-            <td style="color: #6ee7b7;">Inverted = 10111... &notin; List!</td>
+          <tr style="background: var(--surface-success-subtle);">
+            <td class="body-4" style="color: var(--text-success);">Flipped value $1 - s_{ii}$</td>
+            <td style="color: var(--text-success);">1</td>
+            <td style="color: var(--text-success);">0</td>
+            <td style="color: var(--text-success);">1</td>
+            <td style="color: var(--text-success);">1</td>
+            <td style="color: var(--text-success);">1</td>
+            <td style="color: var(--text-success);">Inverted is 10111..., not in the list</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Tab 3: Variants of Turing Machines -->
-<div id="tab-variants" class="theory-tab-content" style="display: none;">
-  <div class="card" style="margin-bottom: 1.5rem;">
+<!-- Tab 3: Turing machine variants -->
+<section id="tab-variants" class="theory-tab-content" style="display: none;" aria-label="Turing machine variants">
+  <div class="card" style="margin-bottom: var(--sp-300);">
     <div class="card-title">
-      <span>Variants of Turing Machines & Equivalence</span>
-      <span class="badge badge-green">Turing Completeness Equivalence</span>
+      <h2 class="title-2">Variants of Turing machines</h2>
+      <span class="badge badge-green caption-3">Equivalence of models</span>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem;">
-      One of the crowning achievements of automata theory is the proof that modifying the physical architecture
-      of a Turing Machine (adding more tapes, multiple tracks, or non-determinism) <strong>never increases its computational power</strong>!
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
+      A central result of automata theory is that modifying the physical architecture of a Turing machine,
+      by adding more tapes, more tracks, or nondeterminism, <strong>never increases its computational power</strong>.
     </p>
 
     <div class="grid-2">
-      <div class="card" style="background: #0f172a;">
-        <h4 style="color: #93c5fd; margin-bottom: 0.5rem;">1. Multi-Tape Turing Machines</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-          Has $k$ independent tapes, each with its own read/write head.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Multitape Turing machines</h3>
+        <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
+          The machine has $k$ independent tapes, each with its own read and write head.
         </p>
-        <div style="background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #cbd5e1; border-left: 3px solid var(--accent-blue);">
-          <strong>Equivalence Proof:</strong> A 1-tape TM simulates $t$ steps of a $k$-tape TM in $O(t^2)$ time.
-          It interleaves $2k$ tracks on a single tape (one for symbols, one with virtual head markers <code>*</code>).
+        <div class="well" style="background: var(--surface-primary-subtle); border: 1px solid var(--border-primary);">
+          <div class="caption-3" style="color: var(--text-tertiary); margin-bottom: var(--sp-25);">Equivalence proof</div>
+          <p class="body-5" style="color: var(--text-secondary);">
+            A single tape machine simulates $t$ steps of a $k$ tape machine in $O(t^2)$ time by interleaving
+            $2k$ tracks on one tape, one track for symbols and one track for virtual head markers.
+          </p>
         </div>
-      </div>
+      </article>
 
-      <div class="card" style="background: #0f172a;">
-        <h4 style="color: #d8b4fe; margin-bottom: 0.5rem;">2. Non-Deterministic Turing Machines (NTM)</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-          The transition function $\delta$ branches into multiple possible valid choices at each step.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Nondeterministic Turing machines</h3>
+        <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
+          The transition function $\delta$ branches into several valid choices at each step.
         </p>
-        <div style="background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #cbd5e1; border-left: 3px solid var(--accent-purple);">
-          <strong>Equivalence Proof:</strong> A deterministic 3-tape TM simulates an NTM using Breadth-First Search (BFS)
-          over the branching tree. Any language decided by an NTM is decidable by a standard DTM!
+        <div class="well" style="background: var(--surface-primary-subtle); border: 1px solid var(--border-primary);">
+          <div class="caption-3" style="color: var(--text-tertiary); margin-bottom: var(--sp-25);">Equivalence proof</div>
+          <p class="body-5" style="color: var(--text-secondary);">
+            A deterministic three tape machine simulates a nondeterministic machine with breadth first search
+            over the branching tree. Any language decided by a nondeterministic machine is decidable by a
+            standard deterministic machine.
+          </p>
         </div>
-      </div>
+      </article>
 
-      <div class="card" style="background: #0f172a;">
-        <h4 style="color: #6ee7b7; margin-bottom: 0.5rem;">3. Two-Way Infinite Tape TM</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-          Tape extends infinitely to both negative $-\infty$ and positive $+\infty$.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Two way infinite tape</h3>
+        <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
+          The tape extends infinitely toward $-\infty$ and $+\infty$.
         </p>
-        <div style="background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #cbd5e1; border-left: 3px solid var(--accent-green);">
-          <strong>Equivalence Proof:</strong> A standard semi-infinite tape TM folds the tape at cell 0, using Track 1 for positive
-          indices $[0, 1, 2, \dots]$ and Track 2 for negative indices $[-1, -2, \dots]$.
+        <div class="well" style="background: var(--surface-primary-subtle); border: 1px solid var(--border-primary);">
+          <div class="caption-3" style="color: var(--text-tertiary); margin-bottom: var(--sp-25);">Equivalence proof</div>
+          <p class="body-5" style="color: var(--text-secondary);">
+            A standard semi infinite tape machine folds the tape at cell 0, using track 1 for positive indices
+            $[0, 1, 2, \dots]$ and track 2 for negative indices $[-1, -2, \dots]$.
+          </p>
         </div>
-      </div>
+      </article>
 
-      <div class="card" style="background: #0f172a;">
-        <h4 style="color: #fcd34d; margin-bottom: 0.5rem;">4. Multi-Track Turing Machines</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-          Single tape divided into $k$ parallel tracks with a single unified head.
+      <article class="well">
+        <h3 class="title-3" style="margin-bottom: var(--sp-50);">Multitrack Turing machines</h3>
+        <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
+          A single tape is divided into $k$ parallel tracks with one unified head.
         </p>
-        <div style="background: #070b14; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #cbd5e1; border-left: 3px solid var(--accent-amber);">
-          <strong>Equivalence Proof:</strong> Storing $k$ symbols per cell is mathematically equivalent to expanding the finite
-          tape alphabet $\Gamma' = \Gamma^k$. Exactly the same computational power.
+        <div class="well" style="background: var(--surface-primary-subtle); border: 1px solid var(--border-primary);">
+          <div class="caption-3" style="color: var(--text-tertiary); margin-bottom: var(--sp-25);">Equivalence proof</div>
+          <p class="body-5" style="color: var(--text-secondary);">
+            Storing $k$ symbols per cell is equivalent to expanding the finite tape alphabet to
+            $\Gamma' = \Gamma^k$, which preserves exactly the same computational power.
+          </p>
         </div>
-      </div>
+      </article>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Tab 4: Rice's Theorem -->
-<div id="tab-rice" class="theory-tab-content" style="display: none;">
-  <div class="card" style="margin-bottom: 1.5rem;">
+<!-- Tab 4: Rice's theorem -->
+<section id="tab-rice" class="theory-tab-content" style="display: none;" aria-label="Rice's theorem">
+  <div class="card" style="margin-bottom: var(--sp-300);">
     <div class="card-title">
-      <span>Rice's Theorem (1953)</span>
-      <span class="badge badge-red">Semantic Undecidability</span>
+      <h2 class="title-2">Rice's theorem</h2>
+      <span class="badge badge-red caption-3">Semantic undecidability</span>
     </div>
-    <div style="font-size: 1.1rem; color: #fca5a5; font-weight: 600; margin-bottom: 1rem;">
-      "Any non-trivial semantic property of the language recognized by a Turing Machine is undecidable."
+
+    <div class="well body-2" style="color: var(--text-primary); max-width: 65ch; margin-bottom: var(--sp-200);">
+      "Any nontrivial semantic property of the language recognized by a Turing machine is undecidable."
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
-      Rice's Theorem shows that the Halting Problem is not an isolated exception.
-      Rather, <em>every</em> question about the actual behavioral outcome of a program is undecidable!
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
+      Rice's theorem shows that the halting problem is not an isolated exception. <strong>Every</strong> question
+      about the actual behavioral outcome of a program is undecidable.
     </p>
 
-    <!-- Interactive Rice Checker -->
-    <div style="background: #090e1a; border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius-md);">
-      <h4 style="color: #fff; margin-bottom: 0.75rem;">Interactive Property Classifier:</h4>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-        Select a property of a Turing Machine to test if Rice's Theorem applies:
+    <!-- Interactive Rice checker -->
+    <div class="well">
+      <h3 class="title-3" style="margin-bottom: var(--sp-50);">Interactive property classifier</h3>
+      <p class="body-5" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-200);">
+        Select a property of a Turing machine to test whether Rice's theorem applies.
       </p>
 
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-        <button class="btn btn-secondary btn-rice-prop active" data-prop="empty_lang">"Is L(M) empty?"</button>
-        <button class="btn btn-secondary btn-rice-prop" data-prop="accepts_epsilon">"Does M accept empty string &epsilon;?"</button>
-        <button class="btn btn-secondary btn-rice-prop" data-prop="is_finite">"Is L(M) finite?"</button>
-        <button class="btn btn-secondary btn-rice-prop" data-prop="is_regular">"Is L(M) regular?"</button>
-        <button class="btn btn-secondary btn-rice-prop" data-prop="state_count">"Does M have > 5 states?"</button>
+      <div style="display: flex; gap: var(--sp-75); flex-wrap: wrap; margin-bottom: var(--sp-200);">
+        <button type="button" class="btn btn-primary btn-rice-prop active button-sm" data-prop="empty_lang">Is $L(M)$ empty?</button>
+        <button type="button" class="btn btn-secondary btn-rice-prop button-sm" data-prop="accepts_epsilon">Does $M$ accept the empty string?</button>
+        <button type="button" class="btn btn-secondary btn-rice-prop button-sm" data-prop="is_finite">Is $L(M)$ finite?</button>
+        <button type="button" class="btn btn-secondary btn-rice-prop button-sm" data-prop="is_regular">Is $L(M)$ regular?</button>
+        <button type="button" class="btn btn-secondary btn-rice-prop button-sm" data-prop="state_count">Does $M$ have more than five states?</button>
       </div>
 
-      <div id="rice-verdict-box" style="background: #020617; border-left: 4px solid var(--accent-red); padding: 1rem; border-radius: var(--radius-sm);">
+      <div id="rice-verdict-box" class="well" style="background: var(--surface-primary-subtle); border: 1px solid var(--border-primary);">
         <!-- Filled via JS -->
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Tab 5: Post Correspondence Problem (PCP) Interactive -->
-<div id="tab-pcp" class="theory-tab-content" style="display: none;">
-  <div class="card" style="margin-bottom: 1.5rem;">
+<!-- Tab 5: Post Correspondence Problem -->
+<section id="tab-pcp" class="theory-tab-content" style="display: none;" aria-label="Post Correspondence Problem">
+  <div class="card" style="margin-bottom: var(--sp-300);">
     <div class="card-title">
-      <span>Interactive Post Correspondence Problem (PCP)</span>
-      <span class="badge badge-blue">Combinatorial Undecidability</span>
+      <h2 class="title-2">Interactive Post Correspondence Problem</h2>
+      <span class="badge badge-blue caption-3">Combinatorial undecidability</span>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
-      Given a collection of dominoes with a <strong>Top</strong> string and a <strong>Bottom</strong> string, can you find
-      a sequence of dominoes (repeats allowed) such that the concatenated top string equals the concatenated bottom string?
-      Emil Post proved in 1946 that determining if a match exists is <strong>undecidable</strong>!
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
+      Given a collection of dominoes with a <strong>top</strong> string and a <strong>bottom</strong> string,
+      can you find a sequence of dominoes, with repeats allowed, whose concatenated top string equals the
+      concatenated bottom string? Emil Post proved in 1946 that deciding whether a match exists is
+      <strong>undecidable</strong>.
     </p>
 
-    <!-- Preset Instance Selector -->
-    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem;">
-      <span class="form-label">Preset Instance:</span>
-      <button class="btn btn-secondary btn-pcp-preset active" data-preset="instance_solvable">Solvable 3-Tile Instance</button>
-      <button class="btn btn-secondary btn-pcp-preset" data-preset="instance_simple">Solvable 4-Tile Instance</button>
-      <button class="btn btn-secondary btn-pcp-preset" data-preset="instance_unsolvable">Unsolvable Instance</button>
+    <!-- Preset instance selector -->
+    <div style="display: flex; gap: var(--sp-100); flex-wrap: wrap; align-items: center; margin-bottom: var(--sp-300);">
+      <span class="form-label caption-1" style="margin-bottom: 0;">Preset instance</span>
+      <button type="button" class="btn btn-primary btn-pcp-preset active button-sm" data-preset="instance_solvable">Solvable three tile instance</button>
+      <button type="button" class="btn btn-secondary btn-pcp-preset button-sm" data-preset="instance_simple">Solvable four tile instance</button>
+      <button type="button" class="btn btn-secondary btn-pcp-preset button-sm" data-preset="instance_unsolvable">Unsolvable instance</button>
     </div>
 
-    <!-- Add Custom Domino Bar -->
-    <div style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-      <span style="font-size: 0.85rem; font-weight: 600; color: #93c5fd;">Add Custom Domino:</span>
-      <div style="display: flex; align-items: center; gap: 0.4rem;">
-        <label class="form-label" for="pcp-custom-top" style="font-size: 0.8rem;">Top:</label>
-        <input type="text" id="pcp-custom-top" class="form-input" placeholder="e.g. ab" style="width: 80px; padding: 0.3rem 0.5rem; font-family: var(--font-mono); font-size: 0.82rem;">
+    <!-- Add custom domino bar -->
+    <div class="well" style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end; margin-bottom: var(--sp-300);">
+      <span class="title-3">Add a custom domino</span>
+      <div>
+        <label class="form-label caption-1" for="pcp-custom-top">Top</label>
+        <input type="text" id="pcp-custom-top" class="form-input font-mono body-5" placeholder="e.g. ab" style="width: 96px;">
       </div>
-      <div style="display: flex; align-items: center; gap: 0.4rem;">
-        <label class="form-label" for="pcp-custom-bottom" style="font-size: 0.8rem;">Bottom:</label>
-        <input type="text" id="pcp-custom-bottom" class="form-input" placeholder="e.g. b" style="width: 80px; padding: 0.3rem 0.5rem; font-family: var(--font-mono); font-size: 0.82rem;">
+      <div>
+        <label class="form-label caption-1" for="pcp-custom-bottom">Bottom</label>
+        <input type="text" id="pcp-custom-bottom" class="form-input font-mono body-5" placeholder="e.g. b" style="width: 96px;">
       </div>
-      <button id="btn-pcp-add-tile" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">+ Add Tile</button>
-      <button id="btn-pcp-reset-tiles" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; margin-left: auto;">Reset Preset Tiles</button>
+      <button type="button" id="btn-pcp-add-tile" class="btn btn-primary button-sm">
+        <i class="ph ph-plus" aria-hidden="true"></i>
+        <span>Add tile</span>
+      </button>
+      <button type="button" id="btn-pcp-reset-tiles" class="btn btn-secondary button-sm" style="margin-left: auto;">
+        <i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>
+        <span>Reset preset tiles</span>
+      </button>
     </div>
 
-    <!-- Available Tiles -->
-    <div style="background: #0b1120; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
-      <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; font-weight: 600;">
-        Available Domino Tiles (Click to append to your sequence):
+    <!-- Available tiles -->
+    <div class="well" style="margin-bottom: var(--sp-300);">
+      <div class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
+        Available domino tiles. Click a tile to append it to your sequence.
       </div>
-      <div id="pcp-available-tiles" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <div id="pcp-available-tiles" style="display: flex; gap: var(--sp-200); flex-wrap: wrap;">
         <!-- Rendered via JS -->
       </div>
     </div>
 
-    <!-- Active Sequence Workspace -->
-    <div style="background: #090e1a; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Chosen Tile Sequence:</span>
-        <div style="display: flex; gap: 0.5rem;">
-          <button id="btn-pcp-undo" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">Undo</button>
-          <button id="btn-pcp-clear" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">Clear</button>
+    <!-- Active sequence workspace -->
+    <div class="well" style="margin-bottom: var(--sp-300);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--sp-100); margin-bottom: var(--sp-100);">
+        <span class="title-3">Chosen tile sequence</span>
+        <div style="display: flex; gap: var(--sp-75);">
+          <button type="button" id="btn-pcp-undo" class="btn btn-secondary button-xsm">
+            <i class="ph ph-arrow-u-up-left" aria-hidden="true"></i>
+            <span>Undo</span>
+          </button>
+          <button type="button" id="btn-pcp-clear" class="btn btn-secondary button-xsm">
+            <i class="ph ph-trash" aria-hidden="true"></i>
+            <span>Clear</span>
+          </button>
         </div>
       </div>
 
-      <div id="pcp-chosen-tiles" style="display: flex; gap: 0.5rem; flex-wrap: wrap; min-height: 60px; padding: 0.5rem; background: #020617; border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center; margin-bottom: 1rem;">
-        <span style="color: var(--text-dim); font-size: 0.85rem;">Click domino tiles above to assemble your solution.</span>
+      <div id="pcp-chosen-tiles" style="display: flex; gap: var(--sp-75); flex-wrap: wrap; min-height: var(--sp-900); padding: var(--sp-100); background: var(--surface-primary-subtle); border: 1px dashed var(--border-primary); border-radius: var(--r-8); align-items: center; margin-bottom: var(--sp-200);">
+        <!-- Rendered via JS -->
       </div>
 
-      <!-- Concatenated Top vs Bottom Strings Display -->
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.95rem;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <span style="color: #93c5fd; width: 110px;">Top String:</span>
-          <span id="pcp-top-concat" style="color: #fff; background: #0f172a; padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); min-width: 150px;">(empty)</span>
+      <!-- Concatenated strings -->
+      <div style="display: flex; flex-direction: column; gap: var(--sp-75);">
+        <div style="display: flex; align-items: center; gap: var(--sp-200); flex-wrap: wrap;">
+          <span class="caption-1" style="color: var(--text-secondary); min-width: 110px;">Top string</span>
+          <span id="pcp-top-concat" class="well font-mono body-5" style="color: var(--text-primary); padding: var(--sp-50) var(--sp-100); min-width: 150px; border: 1px solid var(--border-primary);">(empty)</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <span style="color: #fcd34d; width: 110px;">Bottom String:</span>
-          <span id="pcp-bottom-concat" style="color: #fff; background: #0f172a; padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); min-width: 150px;">(empty)</span>
+        <div style="display: flex; align-items: center; gap: var(--sp-200); flex-wrap: wrap;">
+          <span class="caption-1" style="color: var(--text-secondary); min-width: 110px;">Bottom string</span>
+          <span id="pcp-bottom-concat" class="well font-mono body-5" style="color: var(--text-primary); padding: var(--sp-50) var(--sp-100); min-width: 150px; border: 1px solid var(--border-primary);">(empty)</span>
         </div>
       </div>
     </div>
 
-    <!-- Verification & Solver Buttons -->
-    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-      <button id="btn-pcp-verify" class="btn btn-primary">
-        <span>✓ Verify Current Match</span>
+    <!-- Verification and solver buttons -->
+    <div style="display: flex; gap: var(--sp-100); flex-wrap: wrap; align-items: center;">
+      <button type="button" id="btn-pcp-verify" class="btn btn-primary button-sm">
+        <i class="ph ph-check-circle" aria-hidden="true"></i>
+        <span>Verify current match</span>
       </button>
-      <button id="btn-pcp-solve" class="btn btn-secondary">
-        <span>🔍 Bounded BFS Auto-Solver</span>
+      <button type="button" id="btn-pcp-solve" class="btn btn-secondary button-sm">
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <span>Bounded BFS auto solver</span>
       </button>
     </div>
 
-    <!-- PCP Result Banner -->
-    <div id="pcp-result-box" style="margin-top: 1rem; display: none;"></div>
+    <!-- PCP result banner -->
+    <div id="pcp-result-box" style="margin-top: var(--sp-200); display: none;"></div>
   </div>
-</div>
+</section>
 
-<!-- Tab 6: Catalog of Undecidable Problems -->
-<div id="tab-undecidable" class="theory-tab-content" style="display: none;">
+<!-- Tab 6: Catalog of undecidable problems -->
+<section id="tab-undecidable" class="theory-tab-content" style="display: none;" aria-label="Catalog of undecidable problems">
   <div class="card">
     <div class="card-title">
-      <span>Catalog of Classical Undecidable Problems & Reductions</span>
-      <span class="badge badge-purple">TOC Reductions</span>
+      <h2 class="title-2">Catalog of classical undecidable problems</h2>
+      <span class="badge badge-purple caption-3">Reductions</span>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
-      Once the Halting Problem was proven undecidable, mathematicians and computer scientists proved dozens of other
-      fundamental problems undecidable through <strong>mapping reductions</strong> ($A \le_m B$):
-      if solving $B$ would let you solve $A$, then $B$ must also be undecidable!
+
+    <p class="body-3" style="color: var(--text-secondary); max-width: 65ch; margin-bottom: var(--sp-300);">
+      Once the halting problem was proven undecidable, mathematicians and computer scientists proved dozens of
+      other fundamental problems undecidable through <strong>mapping reductions</strong> ($A \le_m B$).
+      If solving $B$ would let you solve $A$, then $B$ must also be undecidable.
     </p>
 
     <div class="table-wrap">
-      <table class="table-custom">
+      <table class="table-custom body-5">
         <thead>
           <tr>
-            <th>Problem Name</th>
-            <th>Formal Language Definition</th>
-            <th>Status</th>
-            <th>Reduction / Proof Sketch</th>
+            <th class="title-4">Problem name</th>
+            <th class="title-4">Formal language definition</th>
+            <th class="title-4">Status</th>
+            <th class="title-4">Reduction and proof sketch</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="font-weight: 700; color: #f87171;">Halting Problem ($H_{\text{TM}}$)</td>
+            <td class="body-4" style="color: var(--text-error);">Halting problem ($H_{\text{TM}}$)</td>
             <td>$\{ \langle M, w \rangle \mid M \text{ halts on } w \}$</td>
-            <td><span class="badge badge-red">Undecidable (RE)</span></td>
-            <td>Turing diagonalization / self-referential paradox.</td>
+            <td><span class="badge badge-red caption-3">Undecidable, $RE$</span></td>
+            <td>Turing diagonalization and a self referential paradox.</td>
           </tr>
           <tr>
-            <td style="font-weight: 700; color: #fff;">State-Entry Problem</td>
+            <td class="body-4">State entry problem</td>
             <td>$\{ \langle M, w, q \rangle \mid M \text{ enters } q \text{ on } w \}$</td>
-            <td><span class="badge badge-red">Undecidable</span></td>
-            <td>Reduce from $H_{\text{TM}}$: rewrite halting states to point directly to $q$.</td>
+            <td><span class="badge badge-red caption-3">Undecidable</span></td>
+            <td>Reduce from $H_{\text{TM}}$ by rewriting halting states to point directly to $q$.</td>
           </tr>
           <tr>
-            <td style="font-weight: 700; color: #fff;">Blank Tape Halting Problem</td>
-            <td>$\{ \langle M \rangle \mid M \text{ halts on empty tape } \}$</td>
-            <td><span class="badge badge-red">Undecidable</span></td>
+            <td class="body-4">Blank tape halting problem</td>
+            <td>$\{ \langle M \rangle \mid M \text{ halts on an empty tape } \}$</td>
+            <td><span class="badge badge-red caption-3">Undecidable</span></td>
             <td>Construct $M'$ that writes $w$ on the tape first, then transfers control to $M$.</td>
           </tr>
           <tr>
-            <td style="font-weight: 700; color: #fff;">Emptiness Problem ($E_{\text{TM}}$)</td>
+            <td class="body-4">Emptiness problem ($E_{\text{TM}}$)</td>
             <td>$\{ \langle M \rangle \mid L(M) = \emptyset \}$</td>
-            <td><span class="badge badge-red">Undecidable (Not RE)</span></td>
-            <td>Construct $M'$ which ignores its input, simulates $M$ on $w$, and accepts if $M$ accepts.</td>
+            <td><span class="badge badge-red caption-3">Undecidable, not $RE$</span></td>
+            <td>Construct $M'$ that ignores its input, simulates $M$ on $w$, and accepts when $M$ accepts.</td>
           </tr>
           <tr>
-            <td style="font-weight: 700; color: #fff;">Equivalence Problem ($EQ_{\text{TM}}$)</td>
+            <td class="body-4">Equivalence problem ($EQ_{\text{TM}}$)</td>
             <td>$\{ \langle M_1, M_2 \rangle \mid L(M_1) = L(M_2) \}$</td>
-            <td><span class="badge badge-red">Undecidable (Not RE)</span></td>
+            <td><span class="badge badge-red caption-3">Undecidable, not $RE$</span></td>
             <td>Reduce from $E_{\text{TM}}$ by letting $M_2$ reject every input string.</td>
           </tr>
           <tr>
-            <td style="font-weight: 700; color: #fff;">CFG Ambiguity Problem</td>
+            <td class="body-4">CFG ambiguity problem</td>
             <td>$\{ \langle G \rangle \mid \text{CFG } G \text{ is ambiguous} \}$</td>
-            <td><span class="badge badge-red">Undecidable</span></td>
-            <td>Reduction from Post Correspondence Problem (PCP).</td>
+            <td><span class="badge badge-red caption-3">Undecidable</span></td>
+            <td>Reduction from the Post Correspondence Problem.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

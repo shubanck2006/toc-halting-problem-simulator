@@ -15,10 +15,49 @@ class TestAppEndpoints(unittest.TestCase):
         self.app.testing = True
 
     def test_pages_get_200(self):
-        routes = ["/", "/simulator", "/universal_tm", "/language_classes", "/halting_problem", "/theory"]
+        routes = [
+            "/",
+            "/simulator",
+            "/universal_tm",
+            "/language_classes",
+            "/halting_problem",
+            "/theory",
+            "/privacy",
+            "/terms",
+        ]
         for r in routes:
             res = self.app.get(r)
             self.assertEqual(res.status_code, 200, f"Route {r} failed with status {res.status_code}")
+
+    def test_custom_404_and_favicon(self):
+        res_404 = self.app.get("/this-route-does-not-exist-404")
+        self.assertEqual(res_404.status_code, 404)
+        html_404 = res_404.data.decode("utf-8")
+        self.assertIn("404", html_404)
+
+        res_fav = self.app.get("/static/images/favicon.svg")
+        self.assertEqual(res_fav.status_code, 200)
+        res_fav.close()
+
+    def test_ui_design_system_and_dom_contracts(self):
+        res_home = self.app.get("/")
+        html_home = res_home.data.decode("utf-8")
+        self.assertIn("Geist", html_home)
+        self.assertIn("phosphor-icons", html_home)
+        self.assertIn("skip-link", html_home)
+        self.assertIn("data-tagline-reveal", html_home)
+
+        dom_checks = {
+            "/simulator": ["machine-select", "btn-load", "btn-step", "btn-play", "tape-track", "transitions-tbody"],
+            "/universal_tm": ["btn-utm-simulate", "utm-machine-select", "utm-scrubber", "utm-track-2-tape"],
+            "/language_classes": ["btn-run-comparison", "lang-input-string", "decider-tape", "recognizer-tape"],
+            "/halting_problem": ["btn-prev-step", "btn-next-step", "btn-predict-halt", "btn-predict-loop"],
+            "/theory": ["rice-verdict-box", "pcp-available-tiles", "pcp-chosen-tiles", "btn-pcp-solve"],
+        }
+        for route, required_ids in dom_checks.items():
+            html = self.app.get(route).data.decode("utf-8")
+            for dom_id in required_ids:
+                self.assertIn(f'id="{dom_id}"', html, f'Missing id="{dom_id}" on {route}')
 
     def test_api_machines_get(self):
         res = self.app.get("/api/machines")

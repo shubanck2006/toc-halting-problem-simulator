@@ -3,42 +3,52 @@
 {% block title %}Module 3: Universal Turing Machine (UTM) - TOC Project{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-    <span class="badge badge-purple">Module 3</span>
-    <span class="badge badge-blue">Universal Computation</span>
-    <span class="badge badge-green">Stored-Program Concept</span>
+<header class="page-header">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-purple caption-3">Module 3</span>
+    <span class="badge badge-blue caption-3">Universal computation</span>
+    <span class="badge badge-green caption-3">Stored program concept</span>
   </div>
-  <h1 class="page-title">Universal Turing Machine (UTM) Simulator</h1>
-  <p class="page-lead">
+  <h1 class="page-title heading-2">Universal Turing Machine simulator</h1>
+  <p class="page-lead body-3" style="max-width: 65ch;">
     Discover how a single universal Turing Machine $U$ can simulate any other Turing Machine $M$ on input $w$
     when provided with its encoded description $\langle M, w \rangle$.
   </p>
-</div>
+</header>
 
-<!-- Theoretical Grounding Banner -->
-<div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.08)); border-left: 4px solid var(--accent-purple);">
-  <h3 style="color: #d8b4fe; margin-bottom: 0.5rem;">The Stored-Program Revolution (Alan Turing, 1936)</h3>
-  <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-    Prior to 1936, calculating machines were built for a single fixed task (e.g. adding or weaving).
-    Alan Turing proved that a single machine $U$ could simulate <em>any</em> arbitrary machine $M$, provided that the rules of $M$
-    are encoded as binary data on the tape! This theoretical breakthrough is the direct ancestor of modern programmable computers.
+<div id="page-notice" class="inline-notice" role="status" aria-live="polite" hidden></div>
+
+<!-- Theoretical Grounding Section -->
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Theoretical grounding">
+  <div class="card-title">
+    <span class="title-3">The stored program revolution (Alan Turing, 1936)</span>
+  </div>
+  <p class="body-3" style="color: var(--text-secondary); max-width: 65ch;">
+    Prior to 1936, calculating machines were built for a single fixed task such as adding or weaving.
+    Alan Turing proved that a single machine $U$ could simulate any arbitrary machine $M$, provided that the rules of $M$
+    are encoded as binary data on the tape. This theoretical breakthrough is the direct ancestor of modern programmable computers.
   </p>
-</div>
+</section>
 
-<!-- UTM Mode Selector & Controls -->
-<div class="card" style="margin-bottom: 1.5rem;">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-    <button id="btn-mode-preset" class="btn btn-primary" style="font-size: 0.82rem;">1. Select Machine ($M, w$)</button>
-    <button id="btn-mode-custom-code" class="btn btn-secondary" style="font-size: 0.82rem;">2. Provide Encoded Description $\langle M, w \rangle$</button>
+<!-- UTM Mode Selector and Controls -->
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="UTM simulation mode">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-200); flex-wrap: wrap;">
+    <button id="btn-mode-preset" class="btn btn-primary button-sm">
+      <i class="ph ph-cpu" aria-hidden="true"></i>
+      <span>1. Select machine ($M, w$)</span>
+    </button>
+    <button id="btn-mode-custom-code" class="btn btn-secondary button-sm">
+      <i class="ph ph-binary" aria-hidden="true"></i>
+      <span>2. Provide encoded description $\langle M, w \rangle$</span>
+    </button>
   </div>
 
   <!-- Mode 1: Predefined Machine Selector -->
-  <div id="utm-panel-preset" style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; justify-content: space-between;">
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+  <div id="utm-panel-preset" style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end; justify-content: space-between;">
+    <div style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end;">
       <div>
-        <label class="form-label" for="utm-machine-select">Target Turing Machine ($M$):</label>
-        <select id="utm-machine-select" class="form-select" style="min-width: 260px;">
+        <label class="form-label caption-1" for="utm-machine-select">Target Turing Machine ($M$)</label>
+        <select id="utm-machine-select" class="form-select body-5" style="min-width: 260px;">
           {% for mid, m in machines.items() %}
             <option value="{{ mid }}">{{ m.name }}</option>
           {% endfor %}
@@ -46,133 +56,155 @@
       </div>
 
       <div>
-        <label class="form-label" for="utm-input-string">Input String ($w$):</label>
-        <input type="text" id="utm-input-string" class="form-input" value="0011" placeholder="e.g. 0011" style="font-family: var(--font-mono); width: 180px;">
+        <label class="form-label caption-1" for="utm-input-string">Input string ($w$)</label>
+        <input type="text" id="utm-input-string" class="form-input font-mono body-5" value="0011" placeholder="e.g. 0011" style="width: 180px;">
       </div>
 
       <div>
-        <label class="form-label" for="utm-max-steps">Max Steps:</label>
-        <input type="number" id="utm-max-steps" class="form-input" value="100" min="10" max="400" style="width: 90px;">
+        <label class="form-label caption-1" for="utm-max-steps">Max steps</label>
+        <input type="number" id="utm-max-steps" class="form-input font-mono body-5" value="100" min="10" max="400" style="width: 100px;">
       </div>
     </div>
 
     <div>
-      <button id="btn-utm-simulate" class="btn btn-primary" style="padding: 0.6rem 1.4rem;">
-        <span>⚙️ Run Universal Simulation</span>
+      <button id="btn-utm-simulate" class="btn btn-primary button-sm">
+        <i class="ph ph-play" aria-hidden="true"></i>
+        <span>Run universal simulation</span>
       </button>
     </div>
   </div>
 
   <!-- Mode 2: Custom Encoded String Input -->
   <div id="utm-panel-custom-code" style="display: none;">
-    <label class="form-label" for="utm-custom-encoded-input">Provide Encoded Machine & Input ($\langle M \rangle 000 \langle w \rangle$):</label>
-    <textarea id="utm-custom-encoded-input" class="form-input" style="width: 100%; height: 90px; font-family: var(--font-mono); font-size: 0.85rem; color: #67e8f9; margin-top: 0.4rem; resize: vertical;" placeholder="Paste standard TOC binary encoding: 1^q 0 1^a 0 1^p 0 1^b 0 1^d 00 ... 000 1^s 0 ..."></textarea>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-      <span style="font-size: 0.8rem; color: var(--text-muted);">Format: transitions separated by <code>00</code>, machine & input separated by <code>000</code>.</span>
-      <div style="display: flex; gap: 0.5rem;">
-        <button id="btn-utm-load-sample-code" class="btn btn-secondary" style="font-size: 0.8rem;">Load Sample Code (0^n 1^n)</button>
-        <button id="btn-utm-simulate-custom" class="btn btn-primary" style="font-size: 0.8rem;">Decode & Simulate UTM</button>
+    <label class="form-label caption-1" for="utm-custom-encoded-input">Provide encoded machine and input ($\langle M \rangle 000 \langle w \rangle$)</label>
+    <textarea id="utm-custom-encoded-input" class="editor-textarea font-mono body-5" style="width: 100%; height: 96px; margin-top: var(--sp-50); padding: var(--sp-100); resize: vertical;" placeholder="Paste standard TOC binary encoding: 1^q 0 1^a 0 1^p 0 1^b 0 1^d 00 ... 000 1^s 0 ..."></textarea>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--sp-100); flex-wrap: wrap; gap: var(--sp-100);">
+      <span class="caption-2" style="color: var(--text-tertiary);">Format: transitions separated by <code>00</code>, machine and input separated by <code>000</code>.</span>
+      <div style="display: flex; gap: var(--sp-75); flex-wrap: wrap;">
+        <button id="btn-utm-load-sample-code" class="btn btn-secondary button-sm">
+          <i class="ph ph-code" aria-hidden="true"></i>
+          <span>Load sample code ($0^n 1^n$)</span>
+        </button>
+        <button id="btn-utm-simulate-custom" class="btn btn-primary button-sm">
+          <i class="ph ph-play" aria-hidden="true"></i>
+          <span>Decode and simulate UTM</span>
+        </button>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- Encoded Representation Display -->
-<div class="card" style="margin-bottom: 1.5rem;">
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Encoded representation">
   <div class="card-title">
-    <span>Formal Encoding $\langle M, w \rangle = \langle M \rangle 000 \langle w \rangle$</span>
-    <span class="badge badge-blue">Standard TOC Binary Encoding</span>
+    <span class="title-3">Formal encoding $\langle M, w \rangle = \langle M \rangle 000 \langle w \rangle$</span>
+    <span class="badge badge-blue caption-3">Standard TOC binary encoding</span>
   </div>
-  <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+  <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100); max-width: 65ch;">
     Transitions are encoded as $1^{i+1} 0 1^j 0 1^{k+1} 0 1^l 0 1^m$, separated by <code>00</code>.
     The machine description $\langle M \rangle$ and encoded input $\langle w \rangle$ are separated by <code>000</code>.
   </p>
-  <div style="background: #020617; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem; overflow-x: auto;">
-    <div id="utm-encoded-string" style="font-family: var(--font-mono); font-size: 0.85rem; color: #67e8f9; word-break: break-all; max-height: 120px; overflow-y: auto;">
-      Select a machine and click 'Run Universal Simulation' to view binary encoding.
+  <div class="well" style="padding: var(--sp-100); overflow-x: auto;">
+    <div id="utm-encoded-string" class="font-mono body-5" style="color: var(--text-info); word-break: break-all; max-height: 120px; overflow-y: auto;">
+      Select a machine and click 'Run universal simulation' to view binary encoding.
     </div>
   </div>
 
   <!-- Unary Encoding Legend Collapsible -->
-  <details style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-    <summary style="cursor: pointer; color: var(--accent-blue); font-weight: 600;">View Symbol & State Unary Encoding Legend</summary>
-    <div id="utm-legend-content" style="margin-top: 0.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; background: #0b1120; padding: 0.75rem; border-radius: var(--radius-sm);">
+  <details style="margin-top: var(--sp-100);">
+    <summary class="caption-1" style="cursor: pointer; color: var(--text-info); font-weight: 500;">View symbol and state unary encoding legend</summary>
+    <div id="utm-legend-content" class="well body-5 font-mono" style="margin-top: var(--sp-75); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-200); padding: var(--sp-100);">
       <!-- Filled via JS -->
     </div>
   </details>
-</div>
+</section>
 
-<!-- 3-Track UTM Architecture Visualization -->
-<div class="card" style="margin-bottom: 1.5rem;">
+<!-- Three Track UTM Architecture Visualization -->
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Three track simulation model">
   <div class="card-title">
-    <span>UTM 3-Track Simulation Model</span>
-    <span id="utm-status-badge" class="status-indicator status-INITIALIZED">READY</span>
+    <span class="title-3">UTM three track simulation model</span>
+    <span id="utm-status-badge" class="status-indicator status-INITIALIZED caption-3">READY</span>
   </div>
-  <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+  <p class="body-5" style="color: var(--text-secondary); margin-bottom: var(--sp-100);">
     The Universal Turing Machine operates by reading and manipulating three logical tracks:
   </p>
 
-  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+  <div style="display: flex; flex-direction: column; gap: var(--sp-100);">
     <!-- Track 1 -->
-    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem;">
-      <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-purple); font-weight: 700;">Track 1: Program Memory (Decoded Transition Rules of $M$)</div>
-      <div id="utm-track-1" style="font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; margin-top: 0.25rem;">
+    <div class="well" style="padding: var(--sp-100);">
+      <div class="caption-3" style="text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em; font-weight: 600;">Track 1: Program memory (decoded transition rules of $M$)</div>
+      <div id="utm-track-1" class="font-mono body-5" style="color: var(--text-tertiary); margin-top: var(--sp-25);">
         Transition rules loaded and indexed into UTM read memory.
       </div>
     </div>
 
     <!-- Track 2 -->
-    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem;">
-      <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-blue); font-weight: 700;">Track 2: Simulated Work Tape (Current Tape Contents of $M$)</div>
-      <div id="utm-track-2-tape" class="tape-track" style="padding: 0.5rem 0; justify-content: flex-start; overflow-x: auto;">
+    <div class="well" style="padding: var(--sp-100);">
+      <div class="caption-3" style="text-transform: uppercase; color: var(--text-info); letter-spacing: 0.05em; font-weight: 600;">Track 2: Simulated work tape (current tape contents of $M$)</div>
+      <div id="utm-track-2-tape" class="tape-track" style="padding: var(--sp-50) 0; justify-content: flex-start; overflow-x: auto;">
         <!-- Tape cells rendered via JS -->
       </div>
     </div>
 
     <!-- Track 3 -->
-    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+    <div class="well" style="padding: var(--sp-100); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-100);">
       <div>
-        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-green); font-weight: 700;">Track 3: State Register (Active State of $M$)</div>
-        <div id="utm-track-3-state" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: #6ee7b7; margin-top: 0.2rem;">
+        <div class="caption-3" style="text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em; font-weight: 600;">Track 3: State register (active state of $M$)</div>
+        <div id="utm-track-3-state" class="font-mono title-2" style="color: var(--text-primary); margin-top: var(--sp-25);">
           q0
         </div>
       </div>
-      <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">
-        Simulated Steps: <span id="utm-sim-steps" style="color: #fff; font-weight: bold;">0</span>
+      <div class="font-mono body-5" style="color: var(--text-secondary); font-variant-numeric: tabular-nums;">
+        Simulated steps: <span id="utm-sim-steps" class="font-mono" style="color: var(--text-primary); font-weight: 600;">0</span>
       </div>
     </div>
 
     <!-- UTM Cycle Navigation Controls -->
-    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
-      <div style="display: flex; gap: 0.4rem; align-items: center;">
-        <button id="btn-utm-first" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;" title="First Step">⏮ First</button>
-        <button id="btn-utm-prev" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;" title="Previous Step">◀ Prev</button>
-        <button id="btn-utm-play" class="btn btn-success" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;" title="Play / Pause">▶ Play</button>
-        <button id="btn-utm-next" class="btn btn-primary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;" title="Next Step">Next ▶</button>
-        <button id="btn-utm-last" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.65rem;" title="Last Step">⏭ Last</button>
+    <div class="controls-panel" style="margin-top: var(--sp-100);">
+      <div style="display: flex; gap: var(--sp-50); align-items: center; flex-wrap: wrap;">
+        <button id="btn-utm-first" class="btn btn-secondary button-sm" title="First step">
+          <i class="ph ph-skip-back" aria-hidden="true"></i>
+          <span>First</span>
+        </button>
+        <button id="btn-utm-prev" class="btn btn-secondary button-sm" title="Previous step">
+          <i class="ph ph-caret-left" aria-hidden="true"></i>
+          <span>Prev</span>
+        </button>
+        <button id="btn-utm-play" class="btn btn-success button-sm" title="Play or pause">
+          <i class="ph ph-play" aria-hidden="true"></i>
+          <span>Play</span>
+        </button>
+        <button id="btn-utm-next" class="btn btn-primary button-sm" title="Next step">
+          <span>Next</span>
+          <i class="ph ph-caret-right" aria-hidden="true"></i>
+        </button>
+        <button id="btn-utm-last" class="btn btn-secondary button-sm" title="Last step">
+          <span>Last</span>
+          <i class="ph ph-skip-forward" aria-hidden="true"></i>
+        </button>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">
-        <span>Scrub:</span>
+      <div class="body-5 font-mono" style="display: flex; align-items: center; gap: var(--sp-100); color: var(--text-secondary);">
+        <span class="caption-2">Scrub</span>
         <input type="range" id="utm-scrubber" min="0" max="0" value="0" style="width: 140px;">
-        <span id="utm-step-indicator" style="color: #67e8f9; font-weight: 600;">Cycle 0 / 0</span>
+        <span id="utm-step-indicator" class="caption-3 font-mono" style="color: var(--text-info); font-variant-numeric: tabular-nums;">Cycle 0 / 0</span>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Step-by-Step UTM Fetch-Decode-Execute History -->
-<div class="card">
+<!-- Step by Step UTM Fetch Decode Execute History -->
+<section class="card" aria-label="Cycle telemetry">
   <div class="card-title">
-    <span>UTM Internal Fetch-Decode-Execute Cycles</span>
-    <span class="badge badge-blue">Cycle Telemetry</span>
+    <span class="title-3">UTM internal fetch decode execute cycles</span>
+    <span class="badge badge-blue caption-3">Cycle telemetry</span>
   </div>
-  <div id="utm-cycles-log" class="log-box" style="max-height: 340px;">
-    <div class="log-entry" style="color: var(--text-dim);">
+  <div id="utm-cycles-log" class="log-box font-mono body-5" style="max-height: 340px;">
+    <div class="log-entry" style="color: var(--text-tertiary);">
       Run universal simulation above to stream UTM cycle operations.
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

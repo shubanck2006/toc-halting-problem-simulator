@@ -83,6 +83,23 @@ def theory():
     return render_template("theory.html", topics=topics)
 
 
+@app.route("/privacy")
+def privacy():
+    return render_template("legal.html", mode="privacy")
+
+
+@app.route("/terms")
+def terms():
+    return render_template("legal.html", mode="terms")
+
+
+@app.errorhandler(404)
+def not_found(error):
+    if request.path.startswith("/api/"):
+        return jsonify({"success": False, "error": "Resource not found"}), 404
+    return render_template("404.html"), 404
+
+
 # -------------------------------------------------------------
 # API Endpoints
 # -------------------------------------------------------------

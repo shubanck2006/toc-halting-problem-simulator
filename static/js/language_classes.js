@@ -1,19 +1,26 @@
 /**
- * Module 4: Recursive vs Recursively Enumerable Languages Controller
+ * Module 4: Recursive and recursively enumerable languages controller
  */
 
 document.addEventListener("DOMContentLoaded", function () {
   initLanguageClasses();
 });
 
+const RUN_BOTH_LABEL =
+  '<i class="ph ph-play" aria-hidden="true"></i><span>Run both machines</span>';
+const RUN_BOTH_BUSY =
+  '<i class="ph ph-spinner" aria-hidden="true"></i><span>Simulating</span>';
+
 function initLanguageClasses() {
   const btnRun = document.getElementById("btn-run-comparison");
   const inputEl = document.getElementById("lang-input-string");
   const presetBtns = document.querySelectorAll(".btn-preset-str");
 
-  presetBtns.forEach(btn => {
+  presetBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      inputEl.value = this.getAttribute("data-val");
+      if (inputEl) {
+        inputEl.value = this.getAttribute("data-val") || "";
+      }
       runComparison();
     });
   });
@@ -26,10 +33,14 @@ function initLanguageClasses() {
 }
 
 async function runComparison() {
-  const inputStr = document.getElementById("lang-input-string").value || "";
+  const inputEl = document.getElementById("lang-input-string");
   const btnRun = document.getElementById("btn-run-comparison");
-  btnRun.disabled = true;
-  btnRun.innerText = "Simulating...";
+  const inputStr = inputEl ? inputEl.value : "";
+
+  if (btnRun) {
+    btnRun.disabled = true;
+    btnRun.innerHTML = RUN_BOTH_BUSY;
+  }
 
   try {
     const res = await fetch("/api/language_classes/compare", {
@@ -39,26 +50,41 @@ async function runComparison() {
     });
 
     const data = await res.json();
-    btnRun.disabled = false;
-    btnRun.innerHTML = "<span>⚡ Run Both Machines</span>";
+
+    if (btnRun) {
+      btnRun.disabled = false;
+      btnRun.innerHTML = RUN_BOTH_LABEL;
+    }
 
     if (!data.success) {
-      alert("Error: " + data.error);
+      notify(
+        "The comparison could not run. Check that the input uses only 0 and 1, then try again. " +
+          (data.error || "")
+      );
       return;
     }
 
     renderComparisonResults(data.comparison);
   } catch (err) {
-    btnRun.disabled = false;
-    btnRun.innerHTML = "<span>⚡ Run Both Machines</span>";
+    if (btnRun) {
+      btnRun.disabled = false;
+      btnRun.innerHTML = RUN_BOTH_LABEL;
+    }
     console.error("Comparison execution error:", err);
+    notify("The comparison service did not respond. Confirm the server is running, then try again.");
+  }
+}
+
+function notify(message) {
+  if (window.showInlineNotice) {
+    window.showInlineNotice(message, "error");
   }
 }
 
 function renderComparisonResults(comp) {
   // Decider
   const dBadge = document.getElementById("decider-status-badge");
-  dBadge.className = `status-indicator status-${comp.decider.status}`;
+  dBadge.className = `status-indicator status-${comp.decider.status} caption-3`;
   dBadge.innerText = comp.decider.status;
   document.getElementById("decider-steps").innerText = comp.decider.steps;
   document.getElementById("decider-tape").innerText = comp.decider.tape || "(blank)";
@@ -66,7 +92,7 @@ function renderComparisonResults(comp) {
 
   // Recognizer
   const rBadge = document.getElementById("recognizer-status-badge");
-  rBadge.className = `status-indicator status-${comp.recognizer.status}`;
+  rBadge.className = `status-indicator status-${comp.recognizer.status} caption-3`;
   rBadge.innerText = comp.recognizer.status;
   document.getElementById("recognizer-steps").innerText = comp.recognizer.steps;
   document.getElementById("recognizer-tape").innerText = comp.recognizer.tape || "(blank)";

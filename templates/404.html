@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found - Halting Problem Simulator{% endblock %}
+
+{% block meta_description %}The requested route or tape address does not exist in the Halting Problem Simulator.{% endblock %}
+
+{% block content %}
+<section class="page-header reveal-section" style="max-width: 680px;">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-red caption-3">Error 404</span>
+    <span class="badge badge-blue caption-3">Route not found</span>
+  </div>
+
+  <h1 class="page-title heading-2">This tape address does not exist</h1>
+
+  <p class="page-lead body-3" style="max-width: 65ch;">
+    The route you requested is not part of the simulator, so there is no tape, state, or transition
+    to show here. The address may be mistyped, or a link may point at a page that has moved.
+  </p>
+
+  <p class="body-5" style="margin-top: var(--sp-200); color: var(--text-secondary);">
+    Requested path: <code class="font-mono">{{ request.path }}</code>
+  </p>
+
+  <div style="display: flex; gap: var(--sp-100); flex-wrap: wrap; margin-top: var(--sp-300);">
+    <a href="/" class="btn btn-primary button-sm">
+      <i class="ph ph-arrow-left" aria-hidden="true"></i>
+      <span>Back to overview</span>
+    </a>
+    <a href="/simulator" class="btn btn-secondary button-sm">
+      <i class="ph ph-play" aria-hidden="true"></i>
+      <span>Open simulator</span>
+    </a>
+  </div>
+</section>
+
+<section class="card reveal-section" style="max-width: 680px; margin-top: var(--sp-400);">
+  <h2 class="heading-6" style="margin-bottom: var(--sp-100);">Where to go next</h2>
+  <p class="body-3" style="margin-bottom: var(--sp-200);">
+    The simulator has five working areas, and every one of them starts from a blank tape.
+  </p>
+  <ul class="body-3" style="display: flex; flex-direction: column; gap: var(--sp-75); padding-left: var(--sp-300);">
+    <li><a href="/simulator">Simulator</a> for single step tape execution and language acceptance.</li>
+    <li><a href="/universal_tm">Universal TM</a> for encoded machine simulation.</li>
+    <li><a href="/language_classes">Language classes</a> for deciders and recognizers side by side.</li>
+    <li><a href="/halting_problem">Halting proof</a> for the contradiction walkthrough.</li>
+    <li><a href="/theory">Theory</a> for the wider syllabus topics.</li>
+  </ul>
+</section>
+{% endblock %}

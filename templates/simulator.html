@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Module 1 & 2: Turing Machine Simulator - TOC Project{% endblock %}
+{% block title %}Modules 1 and 2: Turing Machine Simulator - TOC Project{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-    <span class="badge badge-blue">Module 1 & 2</span>
-    <span class="badge badge-green">Turing Machine Engine</span>
-    <span class="badge badge-purple">Language Acceptance</span>
+<header class="page-header">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-blue caption-3">Modules 1 and 2</span>
+    <span class="badge badge-green caption-3">Turing Machine engine</span>
+    <span class="badge badge-purple caption-3">Language acceptance</span>
   </div>
-  <h1 class="page-title">Interactive Turing Machine Simulator</h1>
-  <p class="page-lead">
-    Step through machine transitions, examine expandable tape configurations, track instantaneous descriptions (IDs),
+  <h1 class="page-title heading-2">Interactive Turing Machine simulator</h1>
+  <p class="page-lead body-3" style="max-width: 65ch;">
+    Step through machine transitions, examine expandable tape configurations, track instantaneous descriptions,
     and analyze formal language acceptance.
   </p>
-</div>
+</header>
 
-<!-- Machine Selector & Input Configuration Bar -->
-<div class="card" style="margin-bottom: 1.5rem;">
-  <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; justify-content: space-between;">
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+<div id="page-notice" class="inline-notice" role="status" aria-live="polite" hidden></div>
+
+<!-- Machine Selector and Input Configuration Bar -->
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Machine configuration">
+  <div style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end; justify-content: space-between;">
+    <div style="display: flex; flex-wrap: wrap; gap: var(--sp-200); align-items: flex-end;">
       <div>
-        <label class="form-label" for="machine-select">Predefined Turing Machine:</label>
-        <select id="machine-select" class="form-select" style="min-width: 260px;">
+        <label class="form-label caption-1" for="machine-select">Predefined Turing Machine</label>
+        <select id="machine-select" class="form-select body-5" style="min-width: 260px;">
           {% for mid, m in machines.items() %}
             <option value="{{ mid }}">{{ m.name }}</option>
           {% endfor %}
@@ -30,52 +32,64 @@
       </div>
 
       <div>
-        <label class="form-label" for="input-string">Input String ($\Sigma^*$):</label>
-        <input type="text" id="input-string" class="form-input" value="0011" placeholder="e.g. 0011" style="font-family: var(--font-mono); width: 180px;">
+        <label class="form-label caption-1" for="input-string">Input string ($\Sigma^*$)</label>
+        <input type="text" id="input-string" class="form-input font-mono body-5" value="0011" placeholder="e.g. 0011" style="width: 180px;">
       </div>
 
       <div>
-        <label class="form-label" for="step-limit">Step Safety Limit:</label>
-        <input type="number" id="step-limit" class="form-input" value="1000" min="10" max="5000" style="width: 100px;">
+        <label class="form-label caption-1" for="step-limit">Step safety limit</label>
+        <input type="number" id="step-limit" class="form-input font-mono body-5" value="1000" min="10" max="5000" style="width: 110px;">
       </div>
     </div>
 
-    <div style="display: flex; gap: 0.5rem;">
-      <button id="btn-load" class="btn btn-primary">Load Machine & Input</button>
-      <button id="btn-toggle-editor" class="btn btn-secondary">Edit Machine JSON</button>
+    <div style="display: flex; gap: var(--sp-75); flex-wrap: wrap;">
+      <button id="btn-load" class="btn btn-primary button-sm">
+        <i class="ph ph-play" aria-hidden="true"></i>
+        <span>Load machine</span>
+      </button>
+      <button id="btn-toggle-editor" class="btn btn-secondary button-sm">
+        <i class="ph ph-code" aria-hidden="true"></i>
+        <span>Edit JSON</span>
+      </button>
     </div>
   </div>
 
-  <div id="machine-desc-box" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); font-size: 0.88rem; color: var(--text-muted);">
+  <div id="machine-desc-box" class="well body-5 font-mono" style="margin-top: var(--sp-200);">
     <!-- Machine description rendered dynamically -->
   </div>
-</div>
+</section>
 
 <!-- Machine JSON Editor Panel (Collapsible) -->
-<div id="editor-panel" class="card" style="display: none; margin-bottom: 1.5rem; background: #0c1220;">
+<section id="editor-panel" class="card" style="display: none; margin-bottom: var(--sp-300);" aria-label="Machine JSON editor">
   <div class="card-title">
-    <span>Custom Machine JSON Definition</span>
-    <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-dim);">Edit states, alphabet, or transitions</span>
+    <span class="title-3">Custom machine JSON definition</span>
+    <span class="caption-2" style="color: var(--text-tertiary);">Edit states, alphabet, or transitions</span>
   </div>
-  <textarea id="machine-json-area" style="width: 100%; height: 260px; background: #070a13; color: #a5f3fc; font-family: var(--font-mono); font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; resize: vertical;"></textarea>
-  <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem;">
-    <button id="btn-reset-json" class="btn btn-secondary">Reset to Predefined</button>
-    <button id="btn-apply-json" class="btn btn-success">Apply Custom JSON</button>
+  <textarea id="machine-json-area" class="editor-textarea font-mono body-5" style="width: 100%; height: 260px; padding: var(--sp-100); resize: vertical;"></textarea>
+  <div style="display: flex; justify-content: flex-end; gap: var(--sp-75); margin-top: var(--sp-100); flex-wrap: wrap;">
+    <button id="btn-reset-json" class="btn btn-secondary button-sm">
+      <i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>
+      <span>Reset to predefined</span>
+    </button>
+    <button id="btn-apply-json" class="btn btn-success button-sm">
+      <i class="ph ph-check" aria-hidden="true"></i>
+      <span>Apply custom JSON</span>
+    </button>
   </div>
-</div>
+</section>
 
 <!-- Interactive Tape Visualization Card -->
-<div class="card" style="margin-bottom: 1.5rem;">
-  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <h2 style="font-size: 1.25rem; font-weight: 700;">Bidirectional Infinite Tape</h2>
-      <span id="status-badge" class="status-indicator status-INITIALIZED">INITIALIZED</span>
+<section class="card" style="margin-bottom: var(--sp-300);" aria-label="Tape visualization">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--sp-100); margin-bottom: var(--sp-200);">
+    <div style="display: flex; align-items: center; gap: var(--sp-100); flex-wrap: wrap;">
+      <h2 class="title-2">Bidirectional infinite tape</h2>
+      <span id="status-badge" class="status-indicator status-INITIALIZED caption-3">INITIALIZED</span>
     </div>
-    <div style="display: flex; gap: 1rem; font-size: 0.88rem; color: var(--text-muted); font-family: var(--font-mono);">
-      <span>Step: <strong id="metric-step" style="color: #fff;">0</strong></span>
-      <span>Head Index: <strong id="metric-head" style="color: #93c5fd;">0</strong></span>
-      <span>Current State: <strong id="metric-state" style="color: #d8b4fe;">q0</strong></span>
-      <span>Read: <strong id="metric-symbol" style="color: #fcd34d;">-</strong></span>
+    <div class="body-5 font-mono" style="display: flex; flex-wrap: wrap; gap: var(--sp-200); font-variant-numeric: tabular-nums; color: var(--text-secondary);">
+      <span>Step <strong id="metric-step" class="font-mono" style="color: var(--text-primary);">0</strong></span>
+      <span>Head index <strong id="metric-head" class="font-mono" style="color: var(--text-info);">0</strong></span>
+      <span>Current state <strong id="metric-state" class="font-mono" style="color: var(--text-primary);">q0</strong></span>
+      <span>Read <strong id="metric-symbol" class="font-mono" style="color: var(--text-secondary);">-</strong></span>
     </div>
   </div>
 
@@ -87,51 +101,55 @@
   </div>
 
   <!-- Instantaneous Description (ID) -->
-  <div style="margin-top: 0.5rem;">
-    <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Instantaneous Description (ID: $u \, q \, v$):</span>
-    <div id="id-display" class="id-box">
+  <div style="margin-top: var(--sp-100);">
+    <div class="caption-3" style="text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: var(--sp-50);">Instantaneous description (ID: $u \, q \, v$)</div>
+    <div id="id-display" class="id-box font-mono body-4">
       <span>[q0]</span>
     </div>
   </div>
 
   <!-- Controls Panel -->
-  <div class="controls-panel">
-    <button id="btn-step" class="btn btn-primary" title="Execute a single transition">
-      <span>▶ Step</span>
+  <div class="controls-panel" style="margin-top: var(--sp-200);">
+    <button id="btn-step" class="btn btn-primary button-sm" title="Execute a single transition">
+      <i class="ph ph-step-forward" aria-hidden="true"></i>
+      <span>Step</span>
     </button>
-    <button id="btn-play" class="btn btn-success" title="Auto-play execution">
-      <span>▶ Play</span>
+    <button id="btn-play" class="btn btn-success button-sm" title="Auto play execution">
+      <i class="ph ph-play" aria-hidden="true"></i>
+      <span>Play</span>
     </button>
-    <button id="btn-run-all" class="btn btn-secondary" title="Run directly to completion or step limit">
-      <span>⏩ Run All</span>
+    <button id="btn-run-all" class="btn btn-secondary button-sm" title="Run directly to completion or step limit">
+      <i class="ph ph-fast-forward" aria-hidden="true"></i>
+      <span>Run all</span>
     </button>
-    <button id="btn-reset" class="btn btn-danger" title="Reset execution to initial state">
-      <span>↺ Reset</span>
+    <button id="btn-reset" class="btn btn-danger button-sm" title="Reset execution to initial state">
+      <i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>
+      <span>Reset</span>
     </button>
 
-    <div class="form-group" style="margin-left: auto;">
-      <label class="form-label" for="speed-slider">Speed:</label>
+    <div class="form-group" style="margin-left: auto; display: flex; align-items: center; gap: var(--sp-75);">
+      <label class="form-label caption-2" for="speed-slider" style="margin-bottom: 0;">Speed</label>
       <input type="range" id="speed-slider" min="50" max="1200" step="50" value="400" style="width: 110px;">
-      <span id="speed-val" style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); min-width: 45px;">400ms</span>
+      <span id="speed-val" class="caption-3 font-mono" style="color: var(--text-secondary); font-variant-numeric: tabular-nums; min-width: 48px;">400ms</span>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Lower Grid: Transition Table, State Diagram & History -->
+<!-- Lower Grid: Transition Table, State Diagram and History -->
 <div class="grid-2">
   <!-- Left Column: Transition Table -->
-  <div class="card">
+  <section class="card" aria-label="Transition table">
     <div class="card-title">
-      <span>Transition Table $\delta(q, a)$</span>
-      <span id="rule-count-badge" class="badge badge-blue">0 Rules</span>
+      <span class="title-3">Transition table $\delta(q, a)$</span>
+      <span id="rule-count-badge" class="badge badge-blue caption-3">0 Rules</span>
     </div>
     <div class="table-wrap" style="max-height: 380px;">
-      <table class="table-custom">
+      <table class="table-custom font-mono body-5">
         <thead>
           <tr>
-            <th>Current State ($q$)</th>
+            <th>Current state ($q$)</th>
             <th>Read ($a$)</th>
-            <th>Next State ($p$)</th>
+            <th>Next state ($p$)</th>
             <th>Write ($b$)</th>
             <th>Move ($D$)</th>
           </tr>
@@ -141,34 +159,34 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <!-- Right Column: State Diagram & Execution History -->
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+  <!-- Right Column: State Diagram and Execution History -->
+  <div style="display: flex; flex-direction: column; gap: var(--sp-300);">
     <!-- State Diagram Card -->
-    <div class="card">
+    <section class="card" aria-label="State transition graph">
       <div class="card-title">
-        <span>State Transition Graph</span>
-        <span class="badge badge-purple">Mermaid.js</span>
+        <span class="title-3">State transition graph</span>
+        <span class="badge badge-purple caption-3">Mermaid</span>
       </div>
-      <div id="mermaid-graph-container" style="background: #0b1120; border-radius: var(--radius-sm); padding: 1rem; min-height: 180px; overflow-x: auto; display: flex; align-items: center; justify-content: center;">
+      <div id="mermaid-graph-container" class="well" style="min-height: 180px; overflow-x: auto; display: flex; align-items: center; justify-content: center; padding: var(--sp-200);">
         <div id="mermaid-target" class="mermaid">
           stateDiagram-v2
             [*] --> q0
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Execution History Log -->
-    <div class="card">
+    <section class="card" aria-label="Execution history log">
       <div class="card-title">
-        <span>Execution History Log</span>
-        <button id="btn-clear-log" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">Clear</button>
+        <span class="title-3">Execution history log</span>
+        <button id="btn-clear-log" class="btn btn-secondary button-xsm">Clear</button>
       </div>
-      <div id="history-log" class="log-box">
-        <div class="log-entry" style="color: var(--text-dim);">Load machine and step through execution to populate history.</div>
+      <div id="history-log" class="log-box font-mono body-5">
+        <div class="log-entry" style="color: var(--text-tertiary);">Load machine and step through execution to populate history.</div>
       </div>
-    </div>
+    </section>
   </div>
 </div>
 {% endblock %}

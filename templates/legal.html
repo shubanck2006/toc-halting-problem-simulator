@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% set is_terms = mode == 'terms' %}
+
+{% block title %}{% if is_terms %}Terms of use{% else %}Privacy policy{% endif %} - Halting Problem Simulator{% endblock %}
+
+{% block meta_description %}{% if is_terms %}Terms of use for the open source Halting Problem Simulator, released under the MIT License.{% else %}How the Halting Problem Simulator handles data: no tracking cookies, no analytics, and no external telemetry.{% endif %}{% endblock %}
+
+{% block content %}
+<header class="page-header reveal-section" style="max-width: 680px;">
+  <div style="display: flex; gap: var(--sp-75); margin-bottom: var(--sp-100); flex-wrap: wrap;">
+    <span class="badge badge-blue caption-3">{% if is_terms %}Terms of use{% else %}Privacy{% endif %}</span>
+    <span class="badge badge-green caption-3">MIT License</span>
+  </div>
+
+  <h1 class="page-title heading-2">
+    {% if is_terms %}Terms of use{% else %}Privacy policy{% endif %}
+  </h1>
+
+  <p class="page-lead body-3" style="max-width: 65ch;">
+    {% if is_terms %}
+      This simulator is a free educational tool. These terms describe what it does, what it does not
+      promise, and how you may use it.
+    {% else %}
+      This simulator is a local educational tool with a deliberately small footprint. This page states
+      plainly what runs, what is stored, and what leaves your machine.
+    {% endif %}
+  </p>
+
+  <p class="caption-5" style="margin-top: var(--sp-200); color: var(--text-secondary);">
+    Last updated 4 November 2026
+  </p>
+</header>
+
+<article class="card legal-doc reveal-section" style="max-width: 72ch; margin-top: var(--sp-400);">
+  {% if is_terms %}
+    <section class="legal-section">
+      <h2 class="heading-6">Educational purpose</h2>
+      <p class="body-3">
+        The simulator exists to teach Turing machines, universal computation, and the undecidability of
+        the halting problem. It is a study aid, not a production decision tool and not a formal proof
+        assistant.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">The simulator does not decide halting</h2>
+      <p class="body-3">
+        Every run stops at a step limit. When a machine reaches that limit the interface reports
+        <code class="font-mono">STEP_LIMIT_REACHED</code>. That status means the run was cut short. It is
+        not a claim that the machine loops forever, and it should never be presented as one.
+      </p>
+      <p class="body-3" style="margin-top: var(--sp-200);">
+        The hypothetical halting detector shown in the proof pages is a mathematical device used to reach
+        a contradiction. It is not an implemented oracle.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">License</h2>
+      <p class="body-3">
+        The source code is released under the MIT License, which permits use, copying, modification, and
+        redistribution with attribution and without warranty. The full text lives in the
+        <a href="https://github.com/shubanck2006/toc-halting-problem-simulator" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">Acceptable use</h2>
+      <p class="body-3" style="margin-bottom: var(--sp-100);">
+        You are welcome to read, run, and adapt the project. Please do not:
+      </p>
+      <ul class="body-3 legal-list" style="display: flex; flex-direction: column; gap: var(--sp-75); padding-left: var(--sp-300);">
+        <li>present simulated step limit results as a proof of nontermination;</li>
+        <li>use the project to disrupt, probe, or overload systems you do not own;</li>
+        <li>remove the license notice and then claim the work as your own.</li>
+      </ul>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">No warranty</h2>
+      <p class="body-3">
+        The software is provided as is, without warranty of any kind, express or implied, including
+        warranties of merchantability, fitness for a particular purpose, and noninfringement. The authors
+        are not liable for any claim, damage, or other liability arising from its use.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">Changes</h2>
+      <p class="body-3">
+        These terms may change as the project grows. The date at the top of this page records the most
+        recent revision.
+      </p>
+    </section>
+  {% else %}
+    <section class="legal-section">
+      <h2 class="heading-6">The short version</h2>
+      <p class="body-3">
+        This simulator sets no tracking cookies, runs no analytics, and sends no telemetry. There are no
+        accounts, no advertising, and no profiling. Input strings stay in your browser until you choose to
+        run them against the local Flask process.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">What stays on your machine</h2>
+      <p class="body-3">
+        Machine definitions, tape contents, transition tables, and proof settings are handled in memory by
+        the Flask application that you start yourself. The project does not upload them to a remote
+        database. The local server may print request lines to your terminal while it runs. Those lines
+        remain on the machine that hosts the app and are not collected by the project.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">Cookies and browser storage</h2>
+      <p class="body-3">
+        The application does not set cookies, does not use local storage for tracking, and does not
+        fingerprint your browser. If you clear site data you will simply lose any preferences your browser
+        kept for you, not a profile held by the project.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">External assets</h2>
+      <p class="body-3">
+        Pages load a few public assets over the network: Geist and Geist Mono from Google Fonts, Phosphor
+        icons from a public content network, and the Mermaid and MathJax libraries that render diagrams and
+        mathematics. Those providers receive the request for the asset, including your IP address, under
+        their own privacy policies. The project does not pass your simulator input to them.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">Children and sensitive data</h2>
+      <p class="body-3">
+        The tool is written for undergraduate study. Please do not paste personal, medical, or otherwise
+        sensitive information into an input string. It is not needed for any exercise, and the simulator
+        treats input as plain tape symbols.
+      </p>
+    </section>
+
+    <section class="legal-section" style="margin-top: var(--sp-400);">
+      <h2 class="heading-6">Questions</h2>
+      <p class="body-3">
+        The project is open source under the MIT License. Questions, corrections, and privacy concerns are
+        best raised in the
+        <a href="https://github.com/shubanck2006/toc-halting-problem-simulator" target="_blank" rel="noopener noreferrer">GitHub repository</a>.
+      </p>
+    </section>
+  {% endif %}
+</article>
+{% endblock %}
