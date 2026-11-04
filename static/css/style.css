@@ -1908,24 +1908,50 @@ input[type="radio"] {
   min-width: 0;
 }
 
-.notice-error {
+.notice-error,
+.inline-notice-error {
   border-color: var(--red-500);
   color: var(--text-error);
 }
 
-.notice-info {
+.notice-info,
+.inline-notice-info {
   border-color: var(--primary-400);
   color: var(--text-info);
 }
 
-.notice-success {
+.notice-success,
+.inline-notice-success {
   border-color: var(--green-500);
   color: var(--text-success);
 }
 
-.notice-warning {
+.notice-warning,
+.inline-notice-warning {
   border-color: var(--yellow-500);
   color: var(--text-warning);
+}
+
+.notice-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  border-radius: var(--r-4);
+  opacity: 0.7;
+  transition: opacity var(--dur-short) var(--ease-base);
+}
+
+.notice-dismiss:hover {
+  opacity: 1;
+}
+
+body.nav-open {
+  overflow: hidden;
 }
 
 /* ==========================================================================
@@ -2297,6 +2323,12 @@ input[type="radio"] {
   border-color: var(--action-primary);
   background: var(--action-primary);
   color: var(--gray-00);
+}
+
+.step-bullet.completed {
+  border-color: var(--action-primary);
+  background: var(--surface-secondary);
+  color: var(--action-primary);
 }
 
 .step-bullet:active {
