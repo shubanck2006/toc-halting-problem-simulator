@@ -625,6 +625,8 @@
   align-items: center;
   gap: 20px;
   margin: 32px 0 64px 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .final-cta-content {
@@ -633,6 +635,8 @@
   align-items: center;
   gap: 16px;
   max-width: 680px;
+  position: relative;
+  z-index: 1;
 }
 
 .final-cta-actions {
@@ -712,7 +716,7 @@
       <span class="proof-divider" aria-hidden="true">&middot;</span>
       <div class="proof-item">
         <i class="ph ph-check-circle" aria-hidden="true"></i>
-        <span class="caption-1">45 automated unit tests</span>
+        <span class="caption-1">47 automated unit tests</span>
       </div>
       <span class="proof-divider" aria-hidden="true">&middot;</span>
       <div class="proof-item">
@@ -1148,7 +1152,7 @@
     <article class="card faq-card">
       <h3 class="title-2">Is this simulator free to run offline and inspect?</h3>
       <p class="body-5 text-secondary">
-        Yes. The simulator runs entirely locally using Python and Flask with zero external API calls or user accounts required. You can clone the repository, run the 45 automated unit tests, and create or inspect custom machine definitions offline.
+        Yes. The simulator runs entirely locally using Python and Flask with zero external API calls or user accounts required. You can clone the repository, run the 47 automated unit tests, and create or inspect custom machine definitions offline.
       </p>
     </article>
   </div>
@@ -1156,6 +1160,21 @@
 
 <!-- Risk Reversal + Identical Final CTA Section -->
 <section class="final-cta-section card reveal-section" aria-label="Final call to action">
+  <div
+    class="rb-waves rb-waves--card"
+    data-rb-waves
+    data-preset="classic"
+    data-line-color="#3F3F3F"
+    data-accent-color="#82B1E1"
+    data-spacing="11"
+    data-amplitude="28"
+    data-speed="0.55"
+    data-fade="0.38"
+    data-opacity="0.52"
+    aria-hidden="true"
+  >
+    <canvas class="waves__canvas" aria-hidden="true"></canvas>
+  </div>
   <div class="final-cta-content">
     <h2 class="heading-2">Ready to explore formal computation</h2>
     <p class="body-3 text-secondary" style="max-width: 680px;">

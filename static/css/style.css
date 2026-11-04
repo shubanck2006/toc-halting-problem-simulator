@@ -174,7 +174,14 @@ html {
   scroll-padding-top: var(--sp-900);
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+  scroll-behavior: auto !important;
+}
+
 body {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -215,6 +222,13 @@ video,
 canvas {
   max-width: 100%;
   display: block;
+}
+
+.rb-waves canvas,
+.waves__canvas,
+.rb-star-border__canvas,
+.rb-click-spark-layer canvas {
+  max-width: none;
 }
 
 svg {
@@ -1065,6 +1079,8 @@ caption {
    ========================================================================== */
 
 .app-main {
+  position: relative;
+  z-index: 2;
   flex: 1;
   width: 100%;
   max-width: 1248px;
@@ -1471,6 +1487,8 @@ details.faq-item[open] .faq-question {
    ========================================================================== */
 
 .final-cta-section {
+  position: relative;
+  overflow: hidden;
   margin: var(--sp-800) 0 0;
   padding: var(--sp-700) var(--sp-600);
   border: 1px solid var(--border-primary);
@@ -2608,6 +2626,8 @@ body.nav-open {
    ========================================================================== */
 
 .app-footer {
+  position: relative;
+  z-index: 2;
   margin-top: auto;
   padding: var(--sp-600) var(--sp-300) var(--sp-300);
   background: var(--surface-primary);

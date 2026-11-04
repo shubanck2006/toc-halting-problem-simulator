@@ -46,6 +46,10 @@ class TestAppEndpoints(unittest.TestCase):
         self.assertIn("phosphor-icons", html_home)
         self.assertIn("skip-link", html_home)
         self.assertIn("data-tagline-reveal", html_home)
+        self.assertIn("lenis.min.js", html_home)
+        self.assertIn("/static/js/reactbits.js", html_home)
+        self.assertIn("/static/css/reactbits.css", html_home)
+        self.assertIn("data-rb-waves", html_home)
 
         dom_checks = {
             "/simulator": ["machine-select", "btn-load", "btn-step", "btn-play", "tape-track", "transitions-tbody"],
@@ -58,6 +62,24 @@ class TestAppEndpoints(unittest.TestCase):
             html = self.app.get(route).data.decode("utf-8")
             for dom_id in required_ids:
                 self.assertIn(f'id="{dom_id}"', html, f'Missing id="{dom_id}" on {route}')
+
+    def test_lenis_and_reactbits_hooks(self):
+        html_home = self.app.get("/").data.decode("utf-8")
+        self.assertIn("lenis", html_home)
+        self.assertIn("reactbits.js", html_home)
+        self.assertIn("reactbits.css", html_home)
+        self.assertIn("data-rb-waves", html_home)
+
+        res_rb_css = self.app.get("/static/css/reactbits.css")
+        self.assertEqual(res_rb_css.status_code, 200)
+        res_rb_css.close()
+
+        res_rb_js = self.app.get("/static/js/reactbits.js")
+        self.assertEqual(res_rb_js.status_code, 200)
+        js_body = res_rb_js.data.decode("utf-8")
+        res_rb_js.close()
+        for symbol in ("initWaves", "initStarBorder", "initMagnet", "initGlareHover", "initClickSpark"):
+            self.assertIn(symbol, js_body)
 
     def test_api_machines_get(self):
         res = self.app.get("/api/machines")

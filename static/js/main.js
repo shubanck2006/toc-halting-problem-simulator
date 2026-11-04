@@ -18,6 +18,81 @@ function prefersReducedMotion() {
 }
 
 /* ------------------------------------------------------------------
+ * Lenis smooth scrolling
+ * ------------------------------------------------------------------ */
+
+function initLenisSmoothScroll() {
+  if (prefersReducedMotion() || typeof window.Lenis !== "function") {
+    return null;
+  }
+
+  var scrollableSelectors = [
+    "#history-log",
+    "#utm-cycles-log",
+    ".log-box",
+    ".table-wrap",
+    ".tape-container",
+    ".editor-textarea",
+    "textarea",
+    "pre",
+    "#mobile-nav-drawer"
+  ].join(", ");
+
+  var scrollables = document.querySelectorAll(scrollableSelectors);
+  Array.prototype.forEach.call(scrollables, function (el) {
+    if (!el.hasAttribute("data-lenis-prevent")) {
+      el.setAttribute("data-lenis-prevent", "");
+    }
+  });
+
+  var lenis = new window.Lenis({
+    autoRaf: true,
+    lerp: 0.1,
+    duration: 1.15,
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.2
+  });
+  window.lenis = lenis;
+
+  var anchorLinks = document.querySelectorAll('a[href^="#"]');
+  Array.prototype.forEach.call(anchorLinks, function (link) {
+    link.addEventListener("click", function (event) {
+      if (prefersReducedMotion()) {
+        return;
+      }
+
+      var href = link.getAttribute("href");
+      if (!href || href === "#") {
+        return;
+      }
+
+      var target = null;
+      try {
+        target = document.querySelector(href);
+      } catch (err) {
+        target = null;
+      }
+      if (!target) {
+        return;
+      }
+
+      event.preventDefault();
+      lenis.scrollTo(target, { offset: -88 });
+
+      if (href === "#main-content" && target.focus) {
+        if (!target.hasAttribute("tabindex")) {
+          target.setAttribute("tabindex", "-1");
+        }
+        target.focus({ preventScroll: true });
+      }
+    });
+  });
+
+  return lenis;
+}
+
+/* ------------------------------------------------------------------
  * Mobile navigation drawer
  * ------------------------------------------------------------------ */
 
@@ -60,6 +135,9 @@ function initMobileMenu() {
     button.classList.add("is-open");
     document.body.classList.add("nav-open");
     setIcon(true);
+    if (window.lenis && window.lenis.stop) {
+      window.lenis.stop();
+    }
   }
 
   function closeDrawer(returnFocus) {
@@ -68,6 +146,9 @@ function initMobileMenu() {
     button.classList.remove("is-open");
     document.body.classList.remove("nav-open");
     setIcon(false);
+    if (window.lenis && window.lenis.start) {
+      window.lenis.start();
+    }
 
     function hideDrawer() {
       if (!drawer.classList.contains("is-open")) {
@@ -385,11 +466,15 @@ function showInlineNotice(message, type, targetId) {
 
     var rect = notice.getBoundingClientRect();
     var offscreen = rect.top < 0 || rect.bottom > window.innerHeight;
-    if (offscreen && notice.scrollIntoView) {
-      notice.scrollIntoView({
-        behavior: prefersReducedMotion() ? "auto" : "smooth",
-        block: "center"
-      });
+    if (offscreen) {
+      if (window.lenis && typeof window.lenis.scrollTo === "function") {
+        window.lenis.scrollTo(notice, { offset: -96 });
+      } else if (notice.scrollIntoView) {
+        notice.scrollIntoView({
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          block: "center"
+        });
+      }
     }
   });
 
@@ -404,6 +489,7 @@ window.showInlineNotice = showInlineNotice;
 
 document.addEventListener("DOMContentLoaded", function () {
   initMobileMenu();
+  initLenisSmoothScroll();
   initRevealSections();
   initTaglineReveal();
   triggerMathJax();
